@@ -1,0 +1,179 @@
+---
+import { Image } from 'astro:assets';
+import { pick, type Locale } from '../lib/i18n';
+
+// Image gallery with two layouts:
+//  - "mosaic": asymmetric grid, each item sized by its own span class.
+//  - "strip":  horizontal scroll-snap row with previous/next buttons (keyboard and touch friendly).
+// Every image opens in a native <dialog> lightbox (focus is trapped and Escape closes it).
+// Alt text is required: informative photographs describe what they show.
+export interface GalleryItem {
+  src: ImageMetadata;
+  alt: string;
+  caption?: string;
+  // Aspect ratio of the crop. Fixed ratios keep the layout stable while loading.
+  ratio?: '4/3' | '3/2' | '4/5' | '1/1' | '16/10';
+  // Tailwind classes for the mosaic cell, e.g. "md:col-span-7". Ignored in strip layout.
+  span?: string;
+  // Keep the important part of the photo in view on small screens.
+  position?: string;
+}
+
+interface Props {
+  locale: Locale;
+  items: GalleryItem[];
+  layout?: 'mosaic' | 'strip';
+  label: string;
+}
+
+const { locale, items, layout = 'mosaic', label } = Astro.props;
+const sizesMosaic = '(min-width: 64rem) 40vw, 100vw';
+const sizesStrip = '(min-width: 64rem) 36vw, 80vw';
+---
+<figure class="m-0" data-gallery data-layout={layout}>
+  <div
+    class:list={[
+      layout === 'mosaic' ? 'grid grid-cols-2 gap-3 md:grid-cols-12 md:gap-5' : 'gallery-strip flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 scroll-smooth',
+    ]}
+    role={layout === 'strip' ? 'region' : undefined}
+    aria-label={layout === 'strip' ? label : undefined}
+    tabindex={layout === 'strip' ? 0 : undefined}
+    data-track
+  >
+    {items.map((item, i) => (
+      <div class:list={[
+        'group relative',
+        layout === 'mosaic' ? (item.span ?? 'col-span-1 md:col-span-4') : 'w-[78vw] shrink-0 snap-start md:w-[36vw]',
+      ]}>
+        <button
+          type="button"
+          class="media-button block w-full text-left focus-visible:outline-offset-4"
+          data-open={i}
+          aria-label={pick(locale, `${item.alt}（拡大表示）`, `${item.alt} (enlarge)`)}
+        >
+          <span class="block overflow-hidden bg-hairline" style={`aspect-ratio: ${item.ratio ?? '4/3'};`}>
+            <Image
+              src={item.src}
+              alt=""
+              sizes={layout === 'mosaic' ? sizesMosaic : sizesStrip}
+              widths={[480, 720, 960, 1280]}
+              loading={i < 2 ? 'eager' : 'lazy'}
+              fetchpriority={i === 0 ? 'high' : 'auto'}
+              decoding="async"
+              class="media-img h-full w-full object-cover"
+              style={item.position ? `object-position: ${item.position};` : undefined}
+            />
+          </span>
+        </button>
+        {item.caption && <figcaption class="mt-3 text-xs leading-relaxed text-stone">{item.caption}</figcaption>}
+      </div>
+    ))}
+  </div>
+
+  {layout === 'strip' && (
+    <div class="mt-4 flex items-center justify-end gap-3" data-strip-controls>
+      <button type="button" class="min-h-11 min-w-11 border border-hairline px-3 hover:border-ink" data-prev aria-label={pick(locale, '前へ', 'Previous')}>&larr;</button>
+      <button type="button" class="min-h-11 min-w-11 border border-hairline px-3 hover:border-ink" data-next aria-label={pick(locale, '次へ', 'Next')}>&rarr;</button>
+    </div>
+  )}
+
+  <dialog class="gallery-dialog" data-dialog aria-label={pick(locale, '写真の拡大表示', 'Enlarged photograph')}>
+    <div class="flex items-center justify-between gap-4 p-4 text-sm text-paper">
+      <p data-dialog-count class="tabular-nums"></p>
+      <div class="flex items-center gap-2">
+        <button type="button" class="min-h-11 min-w-11 border border-paper/40 px-3" data-dialog-prev aria-label={pick(locale, '前の写真', 'Previous photograph')}>&larr;</button>
+        <button type="button" class="min-h-11 min-w-11 border border-paper/40 px-3" data-dialog-next aria-label={pick(locale, '次の写真', 'Next photograph')}>&rarr;</button>
+        <button type="button" class="min-h-11 min-w-11 border border-paper/40 px-3" data-dialog-close aria-label={pick(locale, '閉じる', 'Close')}>&times;</button>
+      </div>
+    </div>
+    <div class="flex min-h-0 flex-1 items-center justify-center px-4 pb-6">
+      <div data-dialog-slot class="flex max-h-[72vh] w-full items-center justify-center"></div>
+    </div>
+    <p data-dialog-caption class="px-4 pb-6 text-center text-sm text-paper/80"></p>
+  </dialog>
+
+  <script define:vars={{ items: items.map((item) => ({ alt: item.alt, caption: item.caption ?? '' })) }}>
+    // Lightbox wiring. Each button opens the matching photograph from the same <figure>.
+    const root = document.currentScript?.closest('[data-gallery]');
+    if (root) {
+      const dialog = root.querySelector('[data-dialog]');
+      const slot = root.querySelector('[data-dialog-slot]');
+      const caption = root.querySelector('[data-dialog-caption]');
+      const count = root.querySelector('[data-dialog-count]');
+      const buttons = [...root.querySelectorAll('[data-open]')];
+      const sources = buttons.map((b) => b.querySelector('img')?.getAttribute('src') ?? '');
+      let index = 0;
+
+      const show = (i) => {
+        index = (i + sources.length) % sources.length;
+        // The image element is created only when a photograph is opened, so the markup never contains an empty src.
+        const img = document.createElement('img');
+        img.src = sources[index];
+        img.alt = items[index].alt;
+        img.className = 'max-h-[72vh] w-auto max-w-full object-contain';
+        slot.replaceChildren(img);
+        caption.textContent = items[index].caption;
+        count.textContent = `${index + 1} / ${sources.length}`;
+      };
+
+      buttons.forEach((b, i) => b.addEventListener('click', () => {
+        show(i);
+        dialog.showModal();
+      }));
+      root.querySelector('[data-dialog-close]')?.addEventListener('click', () => dialog.close());
+      root.querySelector('[data-dialog-prev]')?.addEventListener('click', () => show(index - 1));
+      root.querySelector('[data-dialog-next]')?.addEventListener('click', () => show(index + 1));
+      dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+      dialog.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') show(index - 1);
+        if (e.key === 'ArrowRight') show(index + 1);
+      });
+
+      const track = root.querySelector('[data-track]');
+      if (track && root.dataset.layout === 'strip') {
+        const step = () => track.clientWidth * 0.8;
+        root.querySelector('[data-prev]')?.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
+        root.querySelector('[data-next]')?.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
+        track.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowLeft') track.scrollBy({ left: -step(), behavior: 'smooth' });
+          if (e.key === 'ArrowRight') track.scrollBy({ left: step(), behavior: 'smooth' });
+        });
+      }
+    }
+  </script>
+</figure>
+
+<style>
+  .gallery-dialog {
+    width: min(100vw - 1.5rem, 72rem);
+    max-width: 100vw;
+    max-height: 100vh;
+    margin: auto;
+    padding: 0;
+    border: 0;
+    background: var(--color-night);
+    color: var(--color-night-text);
+  }
+  .gallery-dialog::backdrop {
+    background: rgb(27 26 24 / 0.92);
+  }
+  .gallery-dialog[open] {
+    display: flex;
+    flex-direction: column;
+  }
+  .gallery-strip {
+    scrollbar-width: thin;
+  }
+  .media-button:focus-visible {
+    outline: 2px solid var(--color-clay);
+    outline-offset: 4px;
+  }
+  .media-img {
+    transition: transform 700ms ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .group:hover .media-img {
+      transform: scale(1.025);
+    }
+  }
+</style>

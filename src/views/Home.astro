@@ -1,0 +1,324 @@
+---
+import { Image } from 'astro:assets';
+import SectionHead from '../components/SectionHead.astro';
+import NewsList from '../components/NewsList.astro';
+import ContactOptions from '../components/ContactOptions.astro';
+import Gallery, { type GalleryItem } from '../components/Gallery.astro';
+import { localePath, pick, type Locale } from '../lib/i18n';
+import { getNews } from '../lib/news';
+import { company } from '../lib/site';
+import heroMain from '../assets/photos/13_1_1.jpg';
+import heroPanorama from '../assets/photos/top-banner-bg-1.jpg';
+import svcSell from '../assets/photos/performance_slide1_img4.jpg';
+import svcInheritance from '../assets/photos/company_slide2_7.jpg';
+import svcLoan from '../assets/photos/13_1_7.jpg';
+import svcInvestment from '../assets/photos/invest_img_4.jpg';
+import svcStaging from '../assets/photos/company_slide2_1.jpg';
+import propLiving from '../assets/photos/13_1_10.jpg';
+import propBedroom from '../assets/photos/13_1_3.jpg';
+import propBath from '../assets/photos/13_1_6.jpg';
+import propDining from '../assets/photos/13_1_9.jpg';
+import propBalcony from '../assets/photos/13_1_11.jpg';
+import propFloor from '../assets/photos/13_1_54.jpeg';
+import portraitRep from '../assets/photos/company_img_5.jpg';
+import portraitStaff from '../assets/photos/company_img_6.jpg';
+import teamOutdoors from '../assets/photos/top-banner-img-1.jpg';
+import rc1 from '../assets/photos/company_slide_1.jpg';
+import rc2 from '../assets/photos/company_slide_2.jpg';
+import rc3 from '../assets/photos/company_slide_3.jpg';
+import rc4 from '../assets/photos/company_slide_5.jpg';
+import rc5 from '../assets/photos/company_slide_6.jpg';
+import rc6 from '../assets/photos/company_slide_7.jpg';
+import rc7 from '../assets/photos/company_slide_8.jpg';
+import rc8 from '../assets/photos/company_slide_9.jpg';
+import rc9 from '../assets/photos/company_slide_10.jpg';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const latest = (await getNews(locale)).slice(0, 3);
+const L = (path: string) => localePath(locale, path);
+
+// Business facts as published on the current site. Hours are weekdays only.
+const localBusiness = {
+  '@context': 'https://schema.org',
+  '@type': 'RealEstateAgent',
+  name: company.nameEn,
+  alternateName: company.brandEn,
+  url: new URL('/', Astro.site ?? 'http://localhost:4321').href,
+  telephone: company.telIntl,
+  email: company.email,
+  address: {
+    '@type': 'PostalAddress',
+    postalCode: company.postalCode,
+    addressCountry: 'JP',
+    addressRegion: 'Oita',
+    addressLocality: 'Beppu',
+    streetAddress: '亀川中央町5番45号',
+  },
+  openingHoursSpecification: {
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    opens: '09:00',
+    closes: '17:00',
+  },
+  inLanguage: ['ja', 'en'],
+};
+
+const services = [
+  {
+    href: '/buy/', image: svcSell,
+    alt: pick(locale, '別府市内の戸建て住宅の外観', 'Exterior of a detached house in Beppu'),
+    ja: { k: '売却・買取', t: '不動産を売りたい方へ', d: '片付けや手続きを含めてお任せいただけます。' },
+    en: { k: 'Sell', t: 'Selling your property', d: 'We can take on clearing and paperwork as well as the sale itself.' },
+  },
+  {
+    href: '/buy/inheritance/', image: svcInheritance,
+    alt: pick(locale, '庭のある和風の住宅', 'Japanese-style house with a garden'),
+    ja: { k: '相続・空き家', t: '相続物件・空家でお悩みの方へ', d: '県外にお住まいでも、現地へのご来社は必要ありません。' },
+    en: { k: 'Inheritance', t: 'Inherited property and vacant homes', d: 'You do not need to travel, even if you live outside the prefecture.' },
+  },
+  {
+    href: '/any/', image: svcLoan,
+    alt: pick(locale, '別府市の住戸のリビング。窓から光が入る', 'Living room in Beppu with daylight from the window'),
+    ja: { k: 'ローンの返済', t: 'ローンの返済ができない方へ', d: '競売になる前に、任意売却という選択肢があります。' },
+    en: { k: 'Loan', t: 'Loan repayment difficulties', d: 'Before an auction starts, a voluntary sale is an option to consider.' },
+  },
+  {
+    href: '/investment/', image: svcInvestment,
+    alt: pick(locale, '別府の温泉地の風景。湯けむりが上がる', 'Hot-spring landscape in Beppu with rising steam'),
+    ja: { k: '投資・別荘', t: '投資・別荘をご検討の方へ', d: '温泉のある別府の、投資用物件と別荘のご案内。' },
+    en: { k: 'Investment', t: 'Investment and holiday homes', d: 'Investment property and holiday homes in Beppu, a hot-spring town.' },
+  },
+  {
+    href: '/homestaging/', image: svcStaging,
+    alt: pick(locale, '白いカウンターキッチンとダイニングの室内', 'Interior with a white counter kitchen and dining area'),
+    ja: { k: 'ホームステージング', t: 'もっと早く・高く売りたい方へ', d: '物件の魅力を引き出し、売却の可能性を高める方法。' },
+    en: { k: 'Home staging', t: 'Selling faster and for more', d: 'Showing a property at its best to improve its chances of a good sale.' },
+  },
+];
+
+const propertyGallery: GalleryItem[] = [
+  { src: propLiving, alt: pick(locale, '温泉つき住戸のリビングとダイニング', 'Living and dining area of a unit with an in-unit hot spring'), ratio: '4/3', span: 'col-span-2 md:col-span-7' },
+  { src: propBedroom, alt: pick(locale, '寝室。ベッドと木の扉のクローゼット', 'Bedroom with a bed and a wooden wardrobe'), ratio: '4/5', span: 'col-span-1 md:col-span-5' },
+  { src: propBalcony, alt: pick(locale, '南向きのバルコニーの眺め', 'View from the south-facing balcony'), ratio: '4/3', span: 'col-span-1 md:col-span-4' },
+  { src: propBath, alt: pick(locale, '温泉つきの浴室', 'Bathroom with an in-unit hot spring'), ratio: '4/5', span: 'col-span-1 md:col-span-3' },
+  { src: propDining, alt: pick(locale, 'キッチンとダイニングの室内', 'Kitchen and dining area'), ratio: '4/3', span: 'col-span-2 md:col-span-5' },
+];
+
+const renovationCarousel: GalleryItem[] = [
+  { src: rc1, alt: pick(locale, '白いカウンターキッチンとダイニング（施工例）', 'White counter kitchen and dining area (completed work)'), caption: pick(locale, '別府市亀川　リノベーション＋ホームステージング', 'Kikugawa, Beppu: renovation and home staging') },
+  { src: rc2, alt: pick(locale, '木のカウンタートップと窓のある水回り（施工例）', 'Wet area with a timber countertop and window (completed work)') },
+  { src: rc3, alt: pick(locale, '木製の洗面台と青い洗面ボウル（施工例）', 'Wooden vanity with a blue basin (completed work)') },
+  { src: rc4, alt: pick(locale, '木の床の寝室。ラグのある部屋（施工例）', 'Bedroom with timber floors and a rug (completed work)') },
+  { src: rc5, alt: pick(locale, '木製のデッキのあるテラス（施工例）', 'Timber deck terrace (completed work)') },
+  { src: rc6, alt: pick(locale, '木の外階段のある住宅の外観（施工例）', 'Exterior of a house with a timber external staircase (completed work)') },
+  { src: rc7, alt: pick(locale, '木のカウンターのあるキッチン（施工例）', 'Kitchen with a timber counter (completed work)') },
+  { src: rc8, alt: pick(locale, '木の梁のある屋根裏の部屋（施工例）', 'Attic room with exposed timber beams (completed work)') },
+  { src: rc9, alt: pick(locale, '木目のダイニングとキッチン（施工例）', 'Dining area and kitchen with timber finishes (completed work)') },
+];
+
+const reasons = [
+  {
+    ja: { t: 'スピーディーに現金化できる', d: '不動産取引はスピードが重視されます。お客様から信頼をいただくため、スピードを大切にしています。' },
+    en: { t: 'Quick conversion to cash', d: 'Property deals depend on speed. We treat speed as a way of earning your trust.' },
+  },
+  {
+    ja: { t: '「片付け」「手続き」まで全部お任せ', d: '遠方の物件や、片付けの手間がある物件も、現状のままご売却いただけます。' },
+    en: { t: 'We handle clearing and paperwork', d: 'Distant properties and properties that need clearing can be sold in their current state.' },
+  },
+  {
+    ja: { t: '「売れない」を「売れる」に変える', d: '物件を現状のまま売ろうとすると売れにくくなる理由があります。良いものは良い、悪いものは悪いと、正直にお伝えします。' },
+    en: { t: 'Turning "unsellable" into "sellable"', d: 'Properties that are hard to sell often have clear reasons. We tell you honestly what is good and what is not, and suggest what to do about it.' },
+  },
+  {
+    ja: { t: '専門家との連携', d: '不動産取引には法律や税金の知識が欠かせません。司法書士や弁護士などの専門家と連携して、お客様の問題を進めます。' },
+    en: { t: 'Working with specialists', d: 'Property transactions involve law and tax. We work with specialists such as judicial scriveners and lawyers.' },
+  },
+];
+---
+<script type="application/ld+json" set:html={JSON.stringify(localBusiness)} />
+
+<!-- 1. Opening: a layered composition. The photograph and the panorama overlap; no text sits on an image. -->
+<section class="pt-10 md:pt-16" aria-labelledby="hero-title">
+  <div class="wrap grid grid-cols-1 gap-10 md:grid-cols-12 md:items-end">
+    <div class="md:col-span-6 md:pb-10">
+      <p class="eyebrow">{pick(locale, '大分市・別府市　不動産買取・任意売却', 'Property purchase & voluntary sale · Oita City and Beppu')}</p>
+      <h1 id="hero-title" class="mt-6 text-[clamp(2.1rem,4vw,3.5rem)] leading-[1.22] text-balance">
+        {pick(locale, '大分市・別府市の不動産買取・任意売却のご相談は「別府ホーム」へ', 'Property purchase and voluntary sale in Oita City and Beppu, from Beppu Home')}
+      </h1>
+      <p class="lede mt-8 max-w-md text-pretty">
+        {pick(locale,
+          '相続や転勤で空き家のまま、手続きが大変そう、片づけができない、面倒な事は任せてスムーズに現金化したい。そんな時は、私たちにお任せください。',
+          'Left empty after an inheritance or a move, too much paperwork, no time to clear it out, or a wish to turn it into cash without the hassle. Leave it to us.')}
+      </p>
+      <div class="mt-10 flex flex-wrap gap-4">
+        <a href={company.lineUrl} rel="noopener" class="btn-clay">{pick(locale, 'LINEで気軽に相談', 'Chat with us on LINE')}</a>
+        <a href={company.telHref} class="btn-quiet">{pick(locale, `お電話 ${company.tel}`, `Call ${company.tel}`)}</a>
+      </div>
+    </div>
+    <div class="relative md:col-span-6">
+      <div class="relative aspect-[4/3] overflow-hidden bg-hairline md:aspect-[5/4]">
+        <Image src={heroMain} alt={pick(locale, '別府市内の住戸のリビング。大きな窓から外の緑が見える', 'Living room of a renovated home in Beppu, with large windows onto the greenery outside')} widths={[640, 960, 1280]} sizes="(min-width: 64rem) 50vw, 100vw" loading="eager" fetchpriority="high" decoding="async" data-hero-image class="absolute inset-0 h-full w-full object-cover" />
+      </div>
+      <div class="absolute -bottom-8 -left-4 hidden w-[42%] border-[10px] border-paper bg-hairline md:block">
+        <div class="aspect-[16/10] overflow-hidden">
+          <Image src={heroPanorama} alt={pick(locale, '別府湾と市街を見下ろす眺め', 'View over Beppu Bay and the city')} widths={[480, 720]} sizes="30vw" loading="lazy" decoding="async" class="h-full w-full object-cover object-[50%_40%]" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. Statement -->
+<section class="wrap mt-28 grid grid-cols-1 gap-10 md:mt-40 md:grid-cols-12" aria-labelledby="statement">
+  <h2 id="statement" class="text-[clamp(1.75rem,3.4vw,2.75rem)] md:col-span-6" data-reveal>
+    {pick(locale, '安心に、安全に、大切に。', 'With care, safety and respect.')}<br />
+    {pick(locale, '不動産を確実に現金化いたします。', 'We turn property into cash reliably.')}
+  </h2>
+  <p class="lede md:col-span-5 md:col-start-8 text-pretty" data-reveal>
+    {pick(locale,
+      '当社は大分県別府市に拠点を置き、大分市・別府市を中心に、売却・買取・相続・投資のご相談を承っています。代表はオーストラリア出身で、英語での対応も可能です。',
+      'Based in Beppu, Oita Prefecture, we advise on sales, purchases, inheritance and investment, mainly in Oita City and Beppu. Our representative is from Australia and can also work in English.')}
+  </p>
+</section>
+
+<!-- 3. Services as an image-led row -->
+<section class="wrap mt-24 md:mt-36" aria-labelledby="services-title">
+  <SectionHead
+    eyebrow={pick(locale, 'ご相談の内容から選ぶ', 'Choose by your situation')}
+    title={pick(locale, 'どのようなお悩みでも、まずはご相談ください。', 'Whatever the situation, please start with a conversation.')}
+    id="services-title"
+  />
+  <ul class="mt-14 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-5">
+    {services.map((s) => (
+      <li class="group" data-reveal>
+        <a href={L(s.href)} class="block no-underline">
+          <span class="block aspect-[4/3] overflow-hidden bg-hairline">
+            <Image src={s.image} alt={s.alt} widths={[480, 720, 960]} sizes="(min-width: 64rem) 20vw, (min-width: 40rem) 45vw, 100vw" loading="lazy" decoding="async" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+          </span>
+          <span class="mt-5 block eyebrow">{pick(locale, s.ja.k, s.en.k)}</span>
+          <span class="mt-2 block font-display text-[1.25rem] leading-snug group-hover:text-clay md:text-[1.375rem]">{pick(locale, s.ja.t, s.en.t)}</span>
+          <span class="mt-2 block text-[0.9375rem] leading-[1.8] text-stone">{pick(locale, s.ja.d, s.en.d)}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<!-- 4. Property: asymmetric photo mosaic with the floor plan -->
+<section class="wrap mt-28 md:mt-40" aria-labelledby="feature-title">
+  <div class="grid grid-cols-1 gap-8 md:grid-cols-12 md:items-end">
+    <div class="md:col-span-7">
+      <p class="eyebrow" data-reveal>{pick(locale, '物件情報', 'Property')}</p>
+      <h2 id="feature-title" class="mt-4 text-[clamp(1.75rem,3.2vw,2.75rem)]" data-reveal>
+        {pick(locale, '各戸温泉付きリノベーションマンション', 'Renovated apartment with an in-unit hot spring')}
+      </h2>
+    </div>
+    <div class="md:col-span-5 md:pb-2" data-reveal>
+      <p class="text-[0.9375rem] leading-[1.9] text-stone">
+        {pick(locale,
+          '別府市内の、各住戸に温泉が引かれた住まいです。リノベーションは完成済みで、すぐにお住まいいただけます。',
+          'A home in Beppu with a hot spring piped to each unit. The renovation is complete, so it can be lived in straight away.')}
+      </p>
+      <a href={L('/property/post-13/')} class="btn-quiet mt-6">{pick(locale, '物件の詳細を見る', 'View the property')}</a>
+    </div>
+  </div>
+  <div class="mt-14">
+    <Gallery locale={locale} items={propertyGallery} layout="mosaic" label={pick(locale, '物件の写真', 'Property photographs')} />
+  </div>
+  <figure class="mt-12 grid grid-cols-1 gap-6 md:grid-cols-12 md:items-center" data-reveal>
+    <div class="bg-white p-4 md:col-span-5 md:col-start-8 md:row-start-1">
+      <Image src={propFloor} alt={pick(locale, '間取り図。LDK、洋室、収納、洗面、温泉の表示があります', 'Floor plan showing the living-dining-kitchen, a bedroom, storage, washroom and a hot-spring marking')} widths={[480, 725]} sizes="(min-width: 64rem) 40vw, 100vw" loading="lazy" decoding="async" class="h-auto w-full" />
+    </div>
+    <figcaption class="text-sm leading-[1.9] text-stone md:col-span-4 md:row-start-1">
+      {pick(locale, '間取り図。物件の詳細は、お問い合わせの際にご案内します。', 'Floor plan. Full details of the property are given when you contact us.')}
+    </figcaption>
+  </figure>
+</section>
+
+<!-- 5. Company: portraits and credibility -->
+<section class="wrap mt-28 grid grid-cols-1 gap-14 md:mt-40 md:grid-cols-12" aria-labelledby="company-title">
+  <div class="md:col-span-5 md:self-center">
+    <p class="eyebrow" data-reveal>{pick(locale, '会社概要', 'Company')}</p>
+    <h2 id="company-title" class="mt-4 text-[clamp(1.75rem,3.2vw,2.5rem)]" data-reveal>
+      {pick(locale, '売れない物件にも、理由があります。', 'Hard-to-sell properties usually have reasons.')}
+    </h2>
+    <p class="mt-6 text-[0.9375rem] leading-[1.9] text-stone" data-reveal>
+      {pick(locale,
+        '別府ホームは、大分県別府市で開業し7年目となりました。不動産をただ売る・買うのではなく、お客様が新しい人生の一歩を踏みだすための力になりたいと考えています。',
+        'Beppu Home has been in business in Beppu, Oita Prefecture, for seven years. We do more than sell or buy property: we want to help each client take the next step in a new life.')}
+    </p>
+    <a href={L('/company/')} class="btn-quiet mt-8">{pick(locale, '代表挨拶と会社概要', 'Message and company details')}</a>
+  </div>
+  <div class="grid grid-cols-2 gap-4 md:col-span-6 md:col-start-7 md:gap-6">
+    <figure class="m-0" data-reveal>
+      <div class="aspect-[4/5] overflow-hidden bg-hairline">
+        <Image src={portraitRep} alt={pick(locale, '代表のニコラス ライアンの写真', 'Portrait of the representative, ニコラス ライアン')} widths={[480, 720]} sizes="(min-width: 64rem) 25vw, 45vw" loading="lazy" decoding="async" class="h-full w-full object-cover object-top" />
+      </div>
+      <figcaption class="mt-3 text-xs text-stone">{pick(locale, '代表　ニコラス ライアン', 'Representative: ニコラス ライアン')}</figcaption>
+    </figure>
+    <figure class="m-0 mt-10 md:mt-16" data-reveal>
+      <div class="aspect-[4/5] overflow-hidden bg-hairline">
+        <Image src={portraitStaff} alt={pick(locale, 'スタッフのニコラス 真美の写真', 'Portrait of staff member ニコラス 真美')} widths={[480, 720]} sizes="(min-width: 64rem) 25vw, 45vw" loading="lazy" decoding="async" class="h-full w-full object-cover object-top" />
+      </div>
+      <figcaption class="mt-3 text-xs text-stone">{pick(locale, 'スタッフ　ニコラス 真美', 'Staff: ニコラス 真美')}</figcaption>
+    </figure>
+  </div>
+  <ol class="grid gap-x-12 gap-y-12 md:col-span-12 md:grid-cols-2">
+    {reasons.map((r, i) => (
+      <li class="grid grid-cols-[3rem_1fr] gap-4" data-reveal>
+        <span class="font-display text-2xl text-clay">{String(i + 1).padStart(2, '0')}</span>
+        <div>
+          <h3 class="text-[1.25rem] leading-snug md:text-[1.5rem]">{pick(locale, r.ja.t, r.en.t)}</h3>
+          <p class="mt-3 text-[0.9375rem] leading-[1.9] text-stone">{pick(locale, r.ja.d, r.en.d)}</p>
+        </div>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<!-- 6. Renovation and staging: carousel of completed work -->
+<section class="mt-28 md:mt-40" aria-labelledby="works-title">
+  <div class="wrap flex flex-wrap items-end justify-between gap-6">
+    <SectionHead eyebrow={pick(locale, 'リノベーション・ホームステージング', 'Renovation and home staging')} title={pick(locale, '施工例', 'Completed work')} id="works-title" />
+    <a href={L('/homestaging/')} class="btn-quiet">{pick(locale, 'ホームステージングについて', 'About home staging')}</a>
+  </div>
+  <div class="wrap mt-12">
+    <Gallery locale={locale} items={renovationCarousel} layout="strip" label={pick(locale, '施工例の写真', 'Photographs of completed work')} />
+  </div>
+</section>
+
+<!-- 7. News -->
+<section class="wrap mt-28 md:mt-40" aria-labelledby="news-title">
+  <div class="flex flex-wrap items-end justify-between gap-6">
+    <SectionHead eyebrow={pick(locale, 'お知らせ', 'News')} title={pick(locale, '最新情報', 'Latest')} id="news-title" />
+    <a href={L('/column/')} class="btn-quiet">{pick(locale, 'すべてのお知らせ', 'All news')}</a>
+  </div>
+  <div class="mt-10">
+    <NewsList locale={locale} items={latest} />
+  </div>
+</section>
+
+<!-- 8. Consultation: three routes, with the staff photograph -->
+<section id="consult" class="mt-28 border-t border-hairline py-20 md:mt-40 md:py-28" aria-labelledby="consult-title">
+  <div class="wrap grid grid-cols-1 gap-14 md:grid-cols-12">
+    <div class="md:col-span-4">
+      <p class="eyebrow" data-reveal>{pick(locale, 'ご相談の方法', 'How to reach us')}</p>
+      <h2 id="consult-title" class="mt-4 text-[clamp(1.75rem,3.2vw,2.5rem)]" data-reveal>
+        {pick(locale, 'LINE、電話、Zoomから、ご都合の良い方法で。', 'LINE, telephone or Zoom: whichever suits you.')}
+      </h2>
+      <div class="mt-10 aspect-[4/5] overflow-hidden bg-hairline" data-reveal>
+        <Image src={teamOutdoors} alt={pick(locale, '代表とスタッフが屋外で並んでいる写真', 'The representative and a staff member standing outdoors')} widths={[480, 720]} sizes="(min-width: 64rem) 30vw, 100vw" loading="lazy" decoding="async" class="h-full w-full object-cover" />
+      </div>
+    </div>
+    <div class="md:col-span-8">
+      <ContactOptions locale={locale} />
+      <p class="mt-8 text-xs leading-relaxed text-ink/80">
+        {pick(locale, '電話受付は営業時間 9:00～17:00（土日・祝日休）です。', 'Telephone hours: 9:00–17:00, closed Saturdays, Sundays and public holidays.')}
+      </p>
+    </div>
+  </div>
+</section>

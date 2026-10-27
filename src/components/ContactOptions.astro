@@ -1,0 +1,89 @@
+---
+import QRCode from 'qrcode';
+import { company, zoomRequestPath } from '../lib/site';
+import { localePath, pick, type Locale } from '../lib/i18n';
+
+// The three consultation routes, shown as distinct cards.
+// LINE: messaging. Phone: direct call. Zoom: remote consultation via the enquiry form.
+// Nothing here claims an automatic booking or a response time.
+interface Props {
+  locale: Locale;
+  showQr?: boolean;
+  class?: string;
+}
+
+const { locale, showQr = true, class: className } = Astro.props;
+
+// Generated at build time from the official LINE account URL. Not an image of an external QR.
+const qrSvg = showQr
+  ? await QRCode.toString(company.lineUrl, {
+      type: 'svg',
+      margin: 1,
+      color: { dark: '#1f1d1a', light: '#ffffff' },
+    })
+  : '';
+
+const zoomHref = localePath(locale, zoomRequestPath);
+---
+<div class:list={['grid gap-4 lg:grid-cols-3', className]} data-contact-options>
+  <!-- LINE -->
+  <article class="flex flex-col gap-5 bg-clay p-7 text-paper md:p-8" aria-labelledby="opt-line">
+    <div class="flex items-center gap-3">
+      <svg aria-hidden="true" viewBox="0 0 24 24" class="h-6 w-6 shrink-0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4V5z"/></svg>
+      <span class="eyebrow !text-paper">LINE</span>
+    </div>
+    <h3 id="opt-line" class="text-[1.5rem] leading-snug">{pick(locale, 'LINEで気軽に相談', 'Chat with us on LINE')}</h3>
+    <p class="text-[0.9375rem] leading-[1.8] text-paper">
+      {pick(locale, '文字でのやり取りがよい方に。無料査定のご相談も、LINEからお送りいただけます。', 'Prefer messaging? Ask about a free valuation by LINE.')}
+    </p>
+    <p class="text-sm text-paper">
+      {pick(locale, 'LINE ID', 'LINE ID')}: <span class="font-medium text-paper">{company.lineId}</span>
+    </p>
+    <a href={company.lineUrl} rel="noopener" class="btn-light mt-auto justify-center">
+      {pick(locale, 'LINEで相談する（公式アカウント）', 'Open our official LINE account')}
+    </a>
+    {showQr && (
+      <div class="mt-2 hidden items-center gap-4 border-t border-paper/40 pt-5 md:flex">
+        <div class="qr-box h-28 w-28 shrink-0 bg-white p-2" role="img" aria-label={pick(locale, 'LINE公式アカウントのQRコード', 'QR code for our official LINE account')} set:html={qrSvg} />
+        <p class="text-xs leading-relaxed text-paper">
+          {pick(locale, 'スマートフォンのカメラでQRコードを読み取ると、公式アカウントを開けます。', 'Scan with a phone camera to open our official account.')}
+        </p>
+      </div>
+    )}
+  </article>
+
+  <!-- Telephone -->
+  <article class="flex flex-col gap-5 border border-ink bg-paper p-7 md:p-8" aria-labelledby="opt-tel">
+    <div class="flex items-center gap-3">
+      <svg aria-hidden="true" viewBox="0 0 24 24" class="h-6 w-6 shrink-0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z"/></svg>
+      <span class="eyebrow">{pick(locale, '電話', 'Telephone')}</span>
+    </div>
+    <h3 id="opt-tel" class="text-[1.5rem] leading-snug">{pick(locale, 'お電話で相談', 'Call us directly')}</h3>
+    <p class="font-display text-[clamp(1.75rem,3vw,2.25rem)] leading-none tabular-nums">
+      <a href={company.telHref} class="link-underline no-underline">{company.tel}</a>
+    </p>
+    <p class="text-sm text-stone">
+      {pick(locale, '海外からは', 'From outside Japan')}: <span class="tabular-nums text-ink">{company.telIntl}</span>
+    </p>
+    <p class="text-sm text-stone">{pick(locale, '営業時間 9:00～17:00（土日・祝日休）', 'Hours 9:00–17:00 (closed Saturdays, Sundays and public holidays)')}</p>
+    <a href={company.telHref} class="btn-primary mt-auto justify-center">{pick(locale, '電話をかける', 'Call now')}</a>
+  </article>
+
+  <!-- Zoom -->
+  <article class="flex flex-col gap-5 border border-hairline bg-paper p-7 md:p-8" aria-labelledby="opt-zoom">
+    <div class="flex items-center gap-3">
+      <svg aria-hidden="true" viewBox="0 0 24 24" class="h-6 w-6 shrink-0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3" y="6" width="12" height="12" rx="1"/><path d="M15 10l6-3v10l-6-3"/></svg>
+      <span class="eyebrow">Zoom</span>
+    </div>
+    <h3 id="opt-zoom" class="text-[1.5rem] leading-snug">{pick(locale, 'Zoomで相談', 'Consult by Zoom')}</h3>
+    <p class="text-[0.9375rem] leading-[1.8] text-ink/85">
+      {pick(locale,
+        '遠方の方や、お住まいの地域から離れている方もご利用いただけます。Zoomでのご相談は、お問い合わせフォームで「ZOOM」を連絡方法としてお選びください。日程などは、当社からご連絡します。',
+        'Useful if you live far away. For a Zoom consultation, choose “Zoom” as your preferred contact method on the enquiry form. We will contact you to arrange the details.')}
+    </p>
+    <p class="text-xs leading-relaxed text-stone">
+      {pick(locale, 'このボタンは、お問い合わせフォームを開くものです。Zoomの予約は、フォームを送信した後に確定します。', 'This button opens the enquiry form. A Zoom consultation is arranged after you send the form.')}
+    </p>
+    <a href={zoomHref} class="btn-quiet mt-auto justify-center">{pick(locale, 'フォームでZoomを依頼する', 'Request a Zoom consultation')}</a>
+  </article>
+</div>

@@ -1,0 +1,251 @@
+@import "tailwindcss";
+@theme {
+  --color-paper: #f4f1eb;
+  --color-ink: #1f1d1a;
+  --color-stone: #6f6a62;
+  --color-hairline: #d9d3c7;
+  --color-clay: #8a4b33;
+  --color-night: #1b1a18;
+  --color-night-text: #f4f1eb;
+
+  --font-display: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --font-sans: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", sans-serif;
+
+  --container-page: 80rem;
+}
+
+@layer base {
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.85;
+    font-feature-settings: "palt" 0;
+    text-wrap: pretty;
+  }
+
+  @media (min-width: 64rem) {
+    body {
+      font-size: 1.0625rem;
+    }
+  }
+
+  :lang(ja) h1,
+  :lang(ja) h2,
+  :lang(ja) h3,
+  :lang(ja) .lede {
+    word-break: auto-phrase;
+    line-break: strict;
+  }
+
+  :lang(en) body {
+    line-height: 1.7;
+    font-feature-settings: normal;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: 0.02em;
+    text-wrap: balance;
+  }
+
+  :lang(en) h1,
+  :lang(en) h2,
+  :lang(en) h3 {
+    letter-spacing: 0.005em;
+  }
+
+  a {
+    color: inherit;
+    text-underline-offset: 0.2em;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-clay);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--color-clay);
+    color: var(--color-paper);
+  }
+}
+
+@layer components {
+  .wrap {
+    width: min(100% - 2.5rem, var(--container-page));
+    margin-inline: auto;
+  }
+
+  @media (min-width: 64rem) {
+    .wrap {
+      width: min(100% - 6rem, var(--container-page));
+    }
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-stone);
+  }
+
+  .lede {
+    font-size: 1.125rem;
+    line-height: 1.9;
+    color: var(--color-ink);
+  }
+
+  .prose-body p + p {
+    margin-top: 1.1em;
+  }
+
+  .rule {
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 3rem;
+    padding: 0.75rem 1.75rem;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    font-size: 0.9375rem;
+    letter-spacing: 0.04em;
+    transition: background-color 250ms ease;
+  }
+
+  .btn-primary:hover {
+    background: var(--color-clay);
+  }
+
+  .btn-clay {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 3rem;
+    padding: 0.75rem 1.75rem;
+    background: var(--color-clay);
+    color: var(--color-paper);
+    font-size: 0.9375rem;
+    letter-spacing: 0.04em;
+    transition: background-color 250ms ease;
+  }
+
+  .btn-clay:hover {
+    background: var(--color-ink);
+  }
+
+  .btn-light {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 3rem;
+    padding: 0.75rem 1.75rem;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-size: 0.9375rem;
+    letter-spacing: 0.04em;
+    transition: background-color 250ms ease, color 250ms ease;
+  }
+
+  .btn-light:hover {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  .btn-quiet {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid currentColor;
+    font-size: 0.9375rem;
+    letter-spacing: 0.04em;
+  }
+
+  .btn-quiet:hover {
+    color: var(--color-clay);
+  }
+
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 400ms ease;
+  }
+
+  .link-underline:hover {
+    background-size: 100% 1px;
+  }
+}
+
+
+/* Scroll reveals and the hero crop. Applied only when JavaScript has marked the page (class "js"),
+   so content is visible without JavaScript. Reduced motion is handled by the rules at the end. */
+.js [data-reveal] {
+  transition: opacity 600ms ease, transform 600ms ease;
+}
+.js [data-reveal]:not(.is-in) {
+  opacity: 0;
+  transform: translateY(16px);
+}
+.js [data-hero-image] {
+  animation: hero-reveal 1200ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes hero-reveal {
+  from {
+    clip-path: inset(6% 0% 0% 0%);
+    transform: scale(1.04);
+  }
+  to {
+    clip-path: inset(0% 0% 0% 0%);
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 63.99rem) {
+  body {
+    /* Room for the fixed mobile contact bar (see ContactBar.astro). */
+    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal]:not(.is-in) {
+    opacity: 1;
+    transform: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

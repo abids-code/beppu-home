@@ -1,0 +1,38 @@
+---
+import { getEntry, render } from 'astro:content';
+import { pick, type Locale } from '../lib/i18n';
+
+interface Props {
+  locale: Locale;
+  id: 'privacy' | 'terms';
+  titleJa: string;
+  titleEn: string;
+}
+
+const { locale, id, titleJa, titleEn } = Astro.props;
+const entry = await getEntry('legal', id);
+if (!entry) {
+  throw new Error(`Missing legal entry: ${id}`);
+}
+const { Content } = await render(entry);
+---
+<article class="wrap pt-14 md:pt-24 pb-10">
+  <div class="mx-auto max-w-3xl">
+    <p class="eyebrow">{pick(locale, '法令に基づく表示', 'Legal')}</p>
+    <h1 class="mt-5 text-[clamp(2.25rem,5vw,3.75rem)] leading-[1.2]">{pick(locale, titleJa, titleEn)}</h1>
+
+    {locale === 'en' && (
+      <div class="mt-10 border border-clay/40 bg-clay/5 p-6 text-sm leading-relaxed" role="note">
+        <p class="font-display text-base font-semibold text-clay">Japanese text only</p>
+        <p class="mt-2">
+          The text below is the published Japanese version. An English translation has not yet been reviewed, so it has not been published. The Japanese version is the one that applies.
+        </p>
+      </div>
+    )}
+
+    <div class="prose-body mt-12 grid gap-5 text-[0.9375rem] leading-[1.95] text-ink/90">
+      <Content />
+    </div>
+
+  </div>
+</article>

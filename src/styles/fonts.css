@@ -1,0 +1,8 @@
+/* Webfonts (self-hosted via Fontsource). Loaded without blocking first paint
+   from Base.astro. Per-weight files are split into small unicode-range subsets,
+   so a browser downloads only the glyphs a page uses. The "japanese-400" bundles
+   are ~1.8 MB each and are deliberately not used. */
+@import "@fontsource/shippori-mincho-b1/400.css";
+@import "@fontsource/shippori-mincho-b1/600.css";
+@import "@fontsource/zen-kaku-gothic-new/400.css";
+@import "@fontsource/zen-kaku-gothic-new/500.css";

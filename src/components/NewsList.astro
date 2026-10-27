@@ -1,0 +1,50 @@
+---
+import { localePath, pick, type Locale } from '../lib/i18n';
+import { Image } from 'astro:assets';
+import thumb5 from '../assets/photos/13_1_10.jpg';
+import type { NewsItem } from '../lib/news';
+
+interface Props {
+  locale: Locale;
+  items: NewsItem[];
+}
+
+const { locale, items } = Astro.props;
+
+const dateFmt = new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : 'ja-JP', {
+  year: 'numeric',
+  month: locale === 'en' ? 'short' : 'long',
+  day: 'numeric',
+  timeZone: 'Asia/Tokyo',
+});
+
+const categoryLabel = (c: NewsItem['category']) =>
+  c === 'case' ? pick(locale, '買取・売却事例', 'Transaction') : pick(locale, 'お知らせ・コラム', 'Article');
+---
+<ol class="divide-y divide-hairline border-y border-hairline">
+  {items.map((item) => (
+    <li>
+      <a
+        href={localePath(locale, `/column/${item.id}/`)}
+        class="group grid gap-2 py-6 no-underline md:grid-cols-[9rem_1fr_auto] md:items-baseline md:gap-8"
+      >
+        <time datetime={item.date.toISOString().slice(0, 10)} class="text-sm tabular-nums text-stone">
+          {dateFmt.format(item.date)}
+          {item.dateUnverified && <span class="ml-1 text-xs text-clay">({pick(locale, '日付確認中', 'date to be confirmed')})</span>}
+        </time>
+        <span class="flex items-center gap-4">
+          {item.number === 5 ? (
+            <span class="block aspect-[4/3] w-24 shrink-0 overflow-hidden bg-hairline md:w-32">
+              <Image src={thumb5} alt="" widths={[240, 360]} sizes="128px" loading="lazy" decoding="async" class="h-full w-full object-cover" />
+            </span>
+          ) : null}
+          <span class="font-display text-[1.125rem] leading-snug underline-offset-4 group-hover:text-clay group-hover:underline md:text-xl">
+            {item.title}
+            {!item.translated && <span class="ml-2 align-middle text-xs text-stone">[{pick(locale, '日本語のみ', 'Japanese only')}]</span>}
+          </span>
+        </span>
+        <span class="text-xs tracking-[0.08em] text-stone">{categoryLabel(item.category)}</span>
+      </a>
+    </li>
+  ))}
+</ol>

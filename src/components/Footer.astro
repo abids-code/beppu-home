@@ -1,0 +1,79 @@
+---
+import Logo from './Logo.astro';
+import { company, zoomRequestPath } from '../lib/site';
+import { localePath, pick, type Locale } from '../lib/i18n';
+import { footerGroups } from '../lib/nav';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const year = new Date().getFullYear();
+const zoomHref = localePath(locale, zoomRequestPath);
+---
+<footer id="site-footer" class="mt-32 bg-night text-night-text">
+  <div class="wrap grid grid-cols-1 gap-14 py-20 md:grid-cols-12">
+    <div class="md:col-span-5">
+      <Logo locale={locale} tone="light" class="h-16 w-auto" />
+      <p class="mt-8 max-w-sm text-sm leading-[1.9] text-night-text/80">
+        {pick(locale, '大分市・別府市の不動産買取・任意売却・ホームステージング・投資物件のご相談。', 'Property purchase, voluntary sale, home staging and investment property in Oita City and Beppu.')}
+      </p>
+
+      <ul class="mt-10 grid gap-4 text-[0.9375rem]">
+        <li class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+          <span class="eyebrow !text-night-text/60 w-20">{pick(locale, '電話', 'Tel')}</span>
+          <a href={company.telHref} class="link-underline font-medium tabular-nums">{company.tel}</a>
+          <span class="text-xs text-night-text/60 tabular-nums">{company.telIntl}</span>
+        </li>
+        <li class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+          <span class="eyebrow !text-night-text/60 w-20">LINE</span>
+          <a href={company.lineUrl} rel="noopener" class="link-underline font-medium">{pick(locale, '公式アカウントで相談', 'Chat on our official account')}</a>
+          <span class="text-xs text-night-text/60">{company.lineId}</span>
+        </li>
+        <li class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+          <span class="eyebrow !text-night-text/60 w-20">Zoom</span>
+          <a href={zoomHref} class="link-underline font-medium">{pick(locale, 'フォームからZoomを依頼', 'Request a Zoom consultation')}</a>
+        </li>
+        <li class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+          <span class="eyebrow !text-night-text/60 w-20">{pick(locale, 'メール', 'Email')}</span>
+          <a href={`mailto:${company.email}`} class="link-underline break-all">{company.email}</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="md:col-span-6 md:col-start-7">
+      <div class="grid gap-x-10 gap-y-12 sm:grid-cols-2">
+        <nav aria-label={pick(locale, 'フッターメニュー', 'Footer navigation')} class="contents">
+          {footerGroups.map((group) => (
+            <div>
+              <p class="eyebrow !text-night-text/60">{pick(locale, group.titleJa, group.titleEn)}</p>
+              <ul class="mt-5 grid gap-3 text-sm">
+                {group.items.map((item) => (
+                  <li><a href={localePath(locale, item.path)} class="link-underline">{pick(locale, item.labelJa, item.labelEn)}</a></li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
+      </div>
+      <dl class="mt-14 grid gap-6 border-t border-night-text/15 pt-8 text-sm">
+        <div class="grid gap-1 sm:grid-cols-[6rem_1fr]">
+          <dt class="eyebrow !text-night-text/60">{pick(locale, '所在地', 'Address')}</dt>
+          <dd class="leading-relaxed">〒{company.postalCode}<br />{pick(locale, company.addressJa, company.addressEn)}</dd>
+        </div>
+        <div class="grid gap-1 sm:grid-cols-[6rem_1fr]">
+          <dt class="eyebrow !text-night-text/60">{pick(locale, '営業時間', 'Hours')}</dt>
+          <dd>{pick(locale, company.hoursJa, company.hoursEn)}</dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+
+  <div class="border-t border-night-text/15">
+    <div class="wrap flex flex-col gap-3 py-6 text-xs text-night-text/70 sm:flex-row sm:justify-between">
+      <p>© {year} {pick(locale, company.nameJa, company.nameEn)}</p>
+      <p>{pick(locale, '代表：', 'Representative: ')}{pick(locale, company.representativeJa, company.representativeEn)}</p>
+    </div>
+  </div>
+</footer>

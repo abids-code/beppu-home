@@ -1,0 +1,160 @@
+---
+import CtaBand from '../components/CtaBand.astro';
+import Figure from '../components/Figure.astro';
+import Gallery, { type GalleryItem } from '../components/Gallery.astro';
+import { pick, type Locale } from '../lib/i18n';
+import sold1 from '../assets/photos/performance_slide1_img4.jpg';
+import sold2 from '../assets/photos/performance_slide1_img7.jpg';
+import sold3 from '../assets/photos/performance_slide2_img4.jpg';
+import sold4 from '../assets/photos/performance_slide2_img7.jpg';
+import sold5 from '../assets/photos/performance_slide3_img1.jpg';
+import sold6 from '../assets/photos/performance_slide4_img6.jpg';
+import beforeAfterBath from '../assets/photos/performance_slide4_img11_2.jpg';
+import beforeAfterKitchen from '../assets/photos/performance_slide4_img11_3.jpg';
+import rental0 from '../assets/photos/performance_slide6_img1.jpg';
+import newBuild2 from '../assets/photos/performance_slide6_img2.jpg';
+import newBuild3 from '../assets/photos/performance_slide6_img3.jpg';
+import newBuild4 from '../assets/photos/performance_slide6_img4.jpg';
+import newBuild5 from '../assets/photos/performance_slide6_img5.jpg';
+import newBuild6 from '../assets/photos/performance_slide6_img6.jpg';
+import newBuild7 from '../assets/photos/performance_slide6_img7.jpg';
+import newBuild9 from '../assets/photos/performance_slide6_img9.jpg';
+import newBuild10 from '../assets/photos/performance_slide6_img10.jpg';
+import rev1 from '../assets/photos/performance_slide7_img1.jpg';
+import rev2 from '../assets/photos/performance_slide7_img2.jpg';
+import rev3 from '../assets/photos/performance_slide7_img3.jpg';
+import rev4 from '../assets/photos/performance_slide7_img4.jpg';
+import rev5 from '../assets/photos/performance_slide7_img5.jpg';
+import rev8 from '../assets/photos/performance_slide7_img8.jpg';
+import rev9 from '../assets/photos/performance_slide7_img9.jpg';
+import rev10 from '../assets/photos/performance_slide7_img10.jpg';
+import newBuild8 from '../assets/photos/performance_slide6_img8.jpg';
+import newBuild11 from '../assets/photos/performance_slide6_img11.jpg';
+import newBuild12 from '../assets/photos/performance_slide6_img12.jpg';
+import rev6 from '../assets/photos/performance_slide7_img6.jpg';
+import rev7 from '../assets/photos/performance_slide7_img7.jpg';
+import rev11 from '../assets/photos/performance_slide7_img11.jpg';
+import rev12 from '../assets/photos/performance_slide7_img12.jpg';
+import beforeKitchen from '../assets/photos/performance_slide4_img11.jpg';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const purchaseCases: GalleryItem[] = [
+  { src: sold1, alt: pick(locale, '別府市の中古戸建て。玄関と門まわり', 'Used detached house in Beppu with its entrance and gate'), caption: pick(locale, '別府市　中古戸建', 'Beppu: used detached house'), ratio: '4/3', span: 'col-span-2 md:col-span-7' },
+  { src: sold2, alt: pick(locale, '別府市の住宅地の道路と住宅', 'Residential street and houses in Beppu'), caption: pick(locale, '別府市　住宅地', 'Beppu: residential street'), ratio: '4/5', span: 'col-span-1 md:col-span-5' },
+  { src: sold3, alt: pick(locale, '宇佐市の旧商用店舗。道路に面した入口', 'Former commercial shop in Usa with a street-facing entrance'), caption: pick(locale, '宇佐市　旧商用店舗兼倉庫', 'Usa: former shop and warehouse'), ratio: '4/3', span: 'col-span-1 md:col-span-4' },
+  { src: sold4, alt: pick(locale, '宇佐市の旧商用店舗。シャッターの建物', 'Former commercial building in Usa with roller shutters'), caption: pick(locale, '宇佐市　倉庫の外観', 'Usa: warehouse exterior'), ratio: '4/3', span: 'col-span-1 md:col-span-4' },
+  { src: sold5, alt: pick(locale, '別府市の休眠地。舗装された道路に面した土地', 'Dormant land in Beppu beside a paved road'), caption: pick(locale, '別府市　休眠地', 'Beppu: dormant land'), ratio: '4/3', span: 'col-span-2 md:col-span-4' },
+  { src: sold6, alt: pick(locale, '中古住宅の台所。木目の収納とコンロ', 'Kitchen of a used home with timber cabinets and a hob'), caption: pick(locale, '中古戸建の台所', 'Kitchen of a used home'), ratio: '4/5', span: 'col-span-1 md:col-span-4' },
+  { src: beforeKitchen, alt: pick(locale, '施工前の台所。タイルの壁と流し台', 'Kitchen before renovation, with a tiled wall and a sink'), caption: pick(locale, '施工前の台所（事例）', 'Kitchen before renovation (case example)'), ratio: '4/5', span: 'col-span-1 md:col-span-4' },
+];
+
+const newBuildGallery: GalleryItem[] = [
+  { src: newBuild2, alt: pick(locale, '建設中の鉄筋の基礎', 'Reinforced foundations under construction'), caption: pick(locale, '基礎工事', 'Foundation works'), ratio: '4/3', span: 'col-span-2 md:col-span-7' },
+  { src: newBuild5, alt: pick(locale, '建設現場で作業する人たち', 'Workers on the construction site'), caption: pick(locale, '工事の様子', 'Site works'), ratio: '4/5', span: 'col-span-1 md:col-span-5' },
+  { src: newBuild3, alt: pick(locale, '神事の設えのある室内', 'Interior set up for a Shinto ceremony'), caption: pick(locale, '神事の設え（事例）', 'Ceremonial setting (case example)'), ratio: '4/3', span: 'col-span-1 md:col-span-4' },
+  { src: newBuild4, alt: pick(locale, '内装工事中の室内。木の階段とタイル', 'Interior during fit-out, with a timber staircase and tiles'), caption: pick(locale, '内装工事中', 'Interior fit-out'), ratio: '4/5', span: 'col-span-1 md:col-span-4' },
+  { src: newBuild6, alt: pick(locale, '白いキッチンとタイルの壁', 'White kitchen with a tiled wall'), caption: pick(locale, 'キッチン', 'Kitchen'), ratio: '4/3', span: 'col-span-1 md:col-span-4' },
+  { src: newBuild7, alt: pick(locale, 'ロフトのある室内と青いソファ', 'Interior with a loft and a blue sofa'), caption: pick(locale, 'ロフトのある住戸', 'Unit with a loft'), ratio: '4/5', span: 'col-span-1 md:col-span-4' },
+  { src: newBuild9, alt: pick(locale, 'ベッドのある寝室。白いリネン', 'Bedroom with a bed and white linen'), caption: pick(locale, '寝室', 'Bedroom'), ratio: '4/3', span: 'col-span-2 md:col-span-6' },
+  { src: newBuild10, alt: pick(locale, '洗面台と収納のある室内', 'Interior with a vanity and storage'), caption: pick(locale, '洗面', 'Washroom'), ratio: '4/5', span: 'col-span-1 md:col-span-3' },
+  { src: newBuild8, alt: pick(locale, 'バルコニーのある室内。外の景色が見える', 'Interior with a balcony and a view outside'), caption: pick(locale, 'バルコニー', 'Balcony'), ratio: '4/3', span: 'col-span-1 md:col-span-4' },
+  { src: newBuild11, alt: pick(locale, '浴室（新築賃貸マンションの住戸）', 'Bathroom (new rental apartment unit)'), caption: pick(locale, '浴室', 'Bathroom'), ratio: '4/5', span: 'col-span-1 md:col-span-4' },
+  { src: newBuild12, alt: pick(locale, '玄関まわり。扉と収納', 'Entrance area with a door and storage'), caption: pick(locale, '玄関', 'Entrance'), ratio: '4/3', span: 'col-span-2 md:col-span-4' },
+];
+
+const renovatedGallery: GalleryItem[] = [
+  { src: rev1, alt: pick(locale, '賃貸アパートの外観。青い空と隣接する建物', 'Exterior of a rental apartment building under a blue sky'), caption: pick(locale, '外観', 'Exterior'), ratio: '4/3', span: 'col-span-2 md:col-span-7' },
+  { src: rev5, alt: pick(locale, '賃貸アパートの玄関。木の扉', 'Entrance of a rental apartment with timber doors'), caption: pick(locale, '共用部', 'Common area'), ratio: '4/5', span: 'col-span-1 md:col-span-5' },
+  { src: rev2, alt: pick(locale, '賃貸アパートの外観。四階建て', 'Exterior of a four-storey rental apartment'), caption: pick(locale, '外観（四階建て）', 'Exterior (four storeys)'), ratio: '4/3', span: 'col-span-1 md:col-span-4' },
+  { src: rev3, alt: pick(locale, '賃貸マンションの外観。手すりのあるバルコニー', 'Exterior of a rental block with balconies'), caption: pick(locale, '外観（バルコニー）', 'Exterior (balconies)'), ratio: '4/5', span: 'col-span-1 md:col-span-4' },
+  { src: rev4, alt: pick(locale, '賃貸マンションの外観。斜面に建つ建物', 'Exterior of a rental block on a slope'), caption: pick(locale, '外観（斜面地）', 'Exterior (on a slope)'), ratio: '4/3', span: 'col-span-1 md:col-span-4' },
+  { src: rev8, alt: pick(locale, '木の階段収納のある室内', 'Interior with timber stair storage'), caption: pick(locale, '階段収納', 'Stair storage'), ratio: '4/5', span: 'col-span-1 md:col-span-4' },
+  { src: rev9, alt: pick(locale, 'キッチンとダイニングの室内', 'Kitchen and dining area'), caption: pick(locale, 'キッチン', 'Kitchen'), ratio: '4/3', span: 'col-span-2 md:col-span-7' },
+  { src: rev10, alt: pick(locale, '白い壁の部屋と木製の扉', 'Room with white walls and a timber door'), caption: pick(locale, '居室', 'Room'), ratio: '4/5', span: 'col-span-1 md:col-span-5' },
+  { src: rev6, alt: pick(locale, '洗面台と床のタイル', 'Vanity and tiled floor'), caption: pick(locale, '洗面', 'Washroom'), ratio: '4/5', span: 'col-span-1 md:col-span-4' },
+  { src: rev7, alt: pick(locale, '木の壁の浴室', 'Bathroom with a timber wall'), caption: pick(locale, '浴室', 'Bathroom'), ratio: '4/3', span: 'col-span-1 md:col-span-4' },
+  { src: rev11, alt: pick(locale, '玄関。木製の収納と白い壁', 'Entrance with timber storage and white walls'), caption: pick(locale, '玄関', 'Entrance'), ratio: '4/5', span: 'col-span-1 md:col-span-4' },
+  { src: rev12, alt: pick(locale, 'トイレ。チェッカー柄の床', 'Toilet with a checkered floor'), caption: pick(locale, 'トイレ', 'Toilet'), ratio: '4/3', span: 'col-span-2 md:col-span-6' },
+];
+---
+<article>
+  <header class="wrap pt-14 md:pt-24">
+    <div class="grid grid-cols-1 gap-10 md:grid-cols-12 md:items-end">
+      <div class="md:col-span-7">
+        <p class="eyebrow">{pick(locale, '買取実績・事例紹介', 'Track record')}</p>
+        <h1 class="mt-5 text-[clamp(2.25rem,5vw,4.25rem)] leading-[1.2] text-balance">
+          {pick(locale, '別府ホームの買取実績と事例', 'Our purchases and case studies')}
+        </h1>
+      </div>
+      <p class="lede md:col-span-5 md:pb-3">
+        {pick(locale,
+          '不動産の売却の実績や、投資物件・ホームステージングの事例をご紹介します。',
+          'Examples of property we have bought and sold, along with investment and home staging cases.')}
+      </p>
+    </div>
+  </header>
+
+  <section class="wrap mt-16 md:mt-20" aria-labelledby="cases">
+    <div class="grid grid-cols-1 gap-10 md:grid-cols-12">
+      <h2 id="cases" class="text-[clamp(1.75rem,3.2vw,2.5rem)] md:col-span-4" data-reveal>{pick(locale, '買取事例', 'Purchase cases')}</h2>
+      <p class="md:col-span-6 md:col-start-7 text-[0.9375rem] leading-[1.9] text-stone" data-reveal>
+        {pick(locale,
+          '別府ホームでは、片付けも手続きも、買取に関する諸業務は全て代行いたしますので、現状のまま買取が可能です。',
+          'We handle clearing, the paperwork and all other tasks connected with a purchase, so we can buy a property in its current state.')}
+      </p>
+    </div>
+    <div class="mt-14">
+      <Gallery locale={locale} items={purchaseCases} layout="mosaic" label={pick(locale, '買取事例の写真', 'Purchase case photographs')} />
+    </div>
+  </section>
+
+  <section class="wrap mt-24 md:mt-32" aria-labelledby="before-after">
+    <div class="grid grid-cols-1 gap-10 md:grid-cols-12">
+      <h2 id="before-after" class="text-[clamp(1.75rem,3.2vw,2.5rem)] md:col-span-5" data-reveal>{pick(locale, '施工の前と後', 'Before and after')}</h2>
+      <p class="md:col-span-6 md:col-start-7 text-[0.9375rem] leading-[1.9] text-stone" data-reveal>
+        {pick(locale,
+          '中古住宅のリノベーションの事例です。施工前と施工後を並べて掲載しています。', 'Examples of renovating used homes, with the work before and after side by side.')}
+      </p>
+    </div>
+    <div class="mt-14 grid grid-cols-1 gap-14 md:grid-cols-12">
+      <Figure src={beforeAfterBath} alt={pick(locale, '浴室の施工前（左）と施工後（右）の比較', 'Bathroom before (left) and after (right) renovation')} caption={pick(locale, '浴室の施工前と施工後（事例）', 'Bathroom before and after (case example)')} ratio="3/2" sizes="(min-width: 64rem) 50vw, 100vw" class="md:col-span-7" />
+      <Figure src={beforeAfterKitchen} alt={pick(locale, 'キッチンの施工前（左）と施工後（右）の比較', 'Kitchen before (left) and after (right) renovation')} caption={pick(locale, 'キッチンの施工前と施工後（事例）', 'Kitchen before and after (case example)')} ratio="21/9" sizes="(min-width: 64rem) 40vw, 100vw" class="md:col-span-5 md:mt-24" />
+    </div>
+  </section>
+
+  <section class="wrap mt-24 md:mt-32" aria-labelledby="newbuild">
+    <div class="grid grid-cols-1 gap-10 md:grid-cols-12 md:items-end">
+      <div class="md:col-span-7">
+        <p class="eyebrow" data-reveal>{pick(locale, '投資物件事例', 'Investment property examples')}</p>
+        <h2 id="newbuild" class="mt-4 text-[clamp(1.75rem,3.2vw,2.5rem)]" data-reveal>{pick(locale, '新築賃貸マンション', 'New rental apartment block')}</h2>
+      </div>
+      <p class="md:col-span-4 md:col-start-9 text-sm leading-[1.9] text-stone" data-reveal>
+        {pick(locale, '上の完成イメージは、CGによる制作物です。下は工事中と内装の写真です。', 'The completed view above is a computer-generated rendering. The photographs below show the works and the interiors.')}
+      </p>
+    </div>
+    <div class="mt-14 grid grid-cols-1 gap-10 md:grid-cols-12">
+      <Figure src={rental0} alt={pick(locale, '新築賃貸マンションの完成イメージ（CGによる制作物）', 'Computer-generated rendering of the completed new rental apartment block')} caption={pick(locale, '①新築賃貸マンション（完成イメージ・CG）', '1. New rental apartment block (rendering)')} ratio="16/10" sizes="(min-width: 64rem) 60vw, 100vw" class="md:col-span-8" />
+    </div>
+    <div class="mt-14">
+      <Gallery locale={locale} items={newBuildGallery} layout="mosaic" label={pick(locale, '新築賃貸マンションの写真', 'New rental apartment photographs')} />
+    </div>
+  </section>
+
+  <section class="wrap mt-24 md:mt-32" aria-labelledby="renovated">
+    <div class="grid grid-cols-1 gap-10 md:grid-cols-12 md:items-end">
+      <h2 id="renovated" class="text-[clamp(1.75rem,3.2vw,2.5rem)] md:col-span-7" data-reveal>{pick(locale, '②リノベーション賃貸アパート', '2. Renovated rental apartment')}</h2>
+    </div>
+    <div class="mt-14">
+      <Gallery locale={locale} items={renovatedGallery} layout="mosaic" label={pick(locale, 'リノベーション賃貸アパートの写真', 'Renovated rental apartment photographs')} />
+    </div>
+  </section>
+
+  <div class="mt-24 md:mt-32">
+    <CtaBand locale={locale} title={pick(locale, 'あなたの物件でも、同じように考えられます。', 'We can look at your property in the same way.')} text={pick(locale, '売却・買取・投資のご相談は、LINE、電話、Zoomのいずれからでも。', 'For sales, purchases or investment, reach us by LINE, telephone or Zoom.')} />
+  </div>
+</article>

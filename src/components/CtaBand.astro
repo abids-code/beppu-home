@@ -1,0 +1,35 @@
+---
+import { company, zoomRequestPath } from '../lib/site';
+import { localePath, pick, type Locale } from '../lib/i18n';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  text?: string;
+}
+
+const { locale, title, text } = Astro.props;
+const zoomHref = localePath(locale, zoomRequestPath);
+---
+<section class="wrap py-24 md:py-32" aria-labelledby="cta-title">
+  <div class="grid grid-cols-1 gap-10 border-t border-ink pt-12 md:grid-cols-12 md:items-end">
+    <div class="md:col-span-6">
+      <h2 id="cta-title" class="text-[clamp(1.75rem,3.2vw,2.5rem)]" data-reveal>{title}</h2>
+      {text && <p class="mt-5 max-w-xl text-stone" data-reveal>{text}</p>}
+    </div>
+    <ul class="grid gap-3 sm:grid-cols-3 md:col-span-6" data-reveal>
+      <li>
+        <a href={company.lineUrl} rel="noopener" class="btn-clay w-full justify-center">{pick(locale, 'LINEで相談', 'Chat on LINE')}</a>
+      </li>
+      <li>
+        <a href={company.telHref} class="btn-primary w-full justify-center">{pick(locale, '電話で相談', 'Call us')}</a>
+      </li>
+      <li>
+        <a href={zoomHref} class="btn-quiet w-full justify-center">{pick(locale, 'Zoomで相談', 'Zoom consultation')}</a>
+      </li>
+    </ul>
+  </div>
+  <p class="mt-6 text-xs text-stone md:text-right">
+    {pick(locale, `電話 ${company.tel}（営業時間 9:00～17:00）`, `Telephone ${company.tel} (hours 9:00–17:00)`)}
+  </p>
+</section>

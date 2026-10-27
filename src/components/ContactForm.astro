@@ -1,0 +1,283 @@
+---
+import { pick, type Locale } from '../lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const prefectures = [
+  '北海道', '青森県', '岩手県', '宮城県', '秋田県', '山形県', '福島県', '茨城県', '栃木県', '群馬県',
+  '埼玉県', '千葉県', '東京都', '神奈川県', '新潟県', '富山県', '石川県', '福井県', '山梨県', '長野県',
+  '岐阜県', '静岡県', '愛知県', '三重県', '滋賀県', '京都府', '大阪府', '兵庫県', '奈良県', '和歌山県',
+  '鳥取県', '島根県', '岡山県', '広島県', '山口県', '徳島県', '香川県', '愛媛県', '高知県', '福岡県',
+  '佐賀県', '長崎県', '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県',
+];
+
+const purposes = [
+  { value: 'sell', ja: '売却に関して相談したい', en: 'I would like to discuss selling' },
+  { value: 'purchase', ja: '買取相談', en: 'Property purchase enquiry' },
+  { value: 'inheritance', ja: '相続相談', en: 'Inheritance enquiry' },
+  { value: 'investment', ja: '投資用不動産について相談したい', en: 'Investment property enquiry' },
+  { value: 'vacant', ja: '空き家・土地相談', en: 'Vacant house or land enquiry' },
+  { value: 'other', ja: 'その他（下記にご記入ください）', en: 'Other (please describe below)' },
+];
+
+const methods = [
+  { value: 'email', ja: 'メール', en: 'Email' },
+  { value: 'phone', ja: 'お電話', en: 'Telephone' },
+  { value: 'zoom', ja: 'ZOOM', en: 'Zoom' },
+];
+
+const t = {
+  demoTitle: pick(locale, 'デモモード', 'Demo mode'),
+  demoText: pick(
+    locale,
+    'このフォームは現在デモ版です。送信しても内容はどこにも送られず、保存もされません。送信方法の設定が完了するまで、お問い合わせはお電話（0977-75-8528）またはメールでお願いします。',
+    'This form is a demo. Submitting it does not send or store your message. Until a delivery method is configured, please contact us by telephone (0977-75-8528) or email.',
+  ),
+  purposeLegend: pick(locale, '用件区分（複数選択可）', 'Reason for contact (select all that apply)'),
+  name: pick(locale, 'お名前', 'Name'),
+  kana: pick(locale, 'フリガナ', 'Name (katakana)'),
+  postal: pick(locale, '郵便番号（半角数字）', 'Postal code (digits only)'),
+  prefecture: pick(locale, '都道府県', 'Prefecture'),
+  prefectureDefault: pick(locale, '選択してください', 'Please select'),
+  city: pick(locale, '市区町村以下', 'City, ward and street address'),
+  building: pick(locale, 'マンション名など', 'Building name (if any)'),
+  tel: pick(locale, '電話番号', 'Telephone'),
+  time: pick(locale, '連絡希望時間（任意）', 'Preferred time to contact (optional)'),
+  email: pick(locale, 'メールアドレス（半角英数字）', 'Email address'),
+  emailConfirm: pick(locale, 'メールアドレス（確認のため再入力）', 'Email address (re-enter)'),
+  methodLegend: pick(locale, 'ご希望の連絡方法', 'Preferred way to be contacted'),
+  message: pick(locale, 'お問い合わせ内容', 'Message'),
+  required: pick(locale, '必須', 'Required'),
+  optional: pick(locale, '任意', 'Optional'),
+  submit: pick(locale, '送信する（デモ）', 'Submit (demo)'),
+  summary: pick(locale, '入力内容をご確認ください', 'Please check the following'),
+  errName: pick(locale, 'お名前を入力してください。', 'Please enter your name.'),
+  errEmail: pick(locale, 'メールアドレスを正しく入力してください。', 'Please enter a valid email address.'),
+  errEmailMatch: pick(locale, '確認用のメールアドレスが一致しません。', 'The email addresses do not match.'),
+  errPurpose: pick(locale, '用件区分を一つ以上選択してください。', 'Please select at least one reason for contact.'),
+  errMethod: pick(locale, 'ご希望の連絡方法を選択してください。', 'Please choose how you would like to be contacted.'),
+  errPostal: pick(locale, '郵便番号は7桁の半角数字で入力してください。', 'Postal code must be 7 digits.'),
+  demoSent: pick(locale, 'デモモードのため送信されていません。内容は保存されていません。', 'Demo mode: nothing was sent and nothing was saved.'),
+};
+---
+<noscript>
+  <p class="mb-8 border border-hairline p-5 text-sm leading-relaxed">
+    {pick(locale, 'このフォームはJavaScriptが必要です。お電話（0977-75-8528）またはメールでお問い合わせください。', 'This form needs JavaScript. Please contact us by telephone (0977-75-8528) or email.')}
+  </p>
+</noscript>
+<form
+  class="grid gap-8"
+  novalidate
+  data-contact-form
+  data-msg-name={t.errName}
+  data-msg-email={t.errEmail}
+  data-msg-email-match={t.errEmailMatch}
+  data-msg-purpose={t.errPurpose}
+  data-msg-method={t.errMethod}
+  data-msg-postal={t.errPostal}
+  data-msg-demo={t.demoSent}
+  aria-describedby="demo-note"
+>
+  <div id="demo-note" class="border border-clay/40 bg-clay/5 p-5 text-sm leading-relaxed">
+    <p class="font-display text-base font-semibold text-clay">{t.demoTitle}</p>
+    <p class="mt-2">{t.demoText}</p>
+  </div>
+
+  <div data-error-summary tabindex="-1" class="hidden border border-clay bg-paper p-5 text-sm" role="alert">
+    <p class="font-semibold">{t.summary}</p>
+    <ul class="mt-2 list-disc pl-5" data-error-list></ul>
+  </div>
+
+  <fieldset class="grid gap-4">
+    <legend class="mb-2 text-sm font-medium">{t.purposeLegend} <span class="text-clay">*</span></legend>
+    <div class="grid gap-3 sm:grid-cols-2">
+      {purposes.map((p) => (
+        <label class="flex min-h-11 cursor-pointer items-center gap-3 text-[0.9375rem]">
+          <input type="checkbox" name="purpose" value={p.value} class="h-5 w-5 accent-clay" />
+          <span>{pick(locale, p.ja, p.en)}</span>
+        </label>
+      ))}
+    </div>
+    <p class="hidden text-sm text-clay" data-error-for="purpose" id="err-purpose"></p>
+  </fieldset>
+
+  <div class="grid gap-6 sm:grid-cols-2">
+    <div class="grid gap-2">
+      <label for="f-name" class="text-sm font-medium">{t.name} <span class="text-clay">*</span></label>
+      <input id="f-name" name="name" type="text" autocomplete="name" required aria-required="true" class="field" aria-describedby="err-name" />
+      <p class="hidden text-sm text-clay" id="err-name"></p>
+    </div>
+    <div class="grid gap-2">
+      <label for="f-kana" class="text-sm font-medium">{t.kana} <span class="text-stone">({t.optional})</span></label>
+      <input id="f-kana" name="kana" type="text" autocomplete="off" class="field" />
+    </div>
+    <div class="grid gap-2">
+      <label for="f-postal" class="text-sm font-medium">{t.postal} <span class="text-stone">({t.optional})</span></label>
+      <input id="f-postal" name="postal" type="text" inputmode="numeric" autocomplete="postal-code" class="field" aria-describedby="err-postal" />
+      <p class="hidden text-sm text-clay" id="err-postal"></p>
+    </div>
+    <div class="grid gap-2">
+      <label for="f-pref" class="text-sm font-medium">{t.prefecture} <span class="text-stone">({t.optional})</span></label>
+      <select id="f-pref" name="prefecture" autocomplete="address-level1" class="field">
+        <option value="">{t.prefectureDefault}</option>
+        {prefectures.map((p) => <option value={p}>{p}</option>)}
+      </select>
+    </div>
+    <div class="grid gap-2">
+      <label for="f-city" class="text-sm font-medium">{t.city} <span class="text-stone">({t.optional})</span></label>
+      <input id="f-city" name="city" type="text" autocomplete="address-line1" class="field" />
+    </div>
+    <div class="grid gap-2">
+      <label for="f-building" class="text-sm font-medium">{t.building} <span class="text-stone">({t.optional})</span></label>
+      <input id="f-building" name="building" type="text" autocomplete="address-line2" class="field" />
+    </div>
+    <div class="grid gap-2">
+      <label for="f-tel" class="text-sm font-medium">{t.tel} <span class="text-stone">({t.optional})</span></label>
+      <input id="f-tel" name="tel" type="tel" autocomplete="tel" class="field" />
+    </div>
+    <div class="grid gap-2">
+      <label for="f-time" class="text-sm font-medium">{t.time}</label>
+      <input id="f-time" name="time" type="text" class="field" />
+    </div>
+    <div class="grid gap-2">
+      <label for="f-email" class="text-sm font-medium">{t.email} <span class="text-clay">*</span></label>
+      <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required aria-required="true" class="field" aria-describedby="err-email" />
+      <p class="hidden text-sm text-clay" id="err-email"></p>
+    </div>
+    <div class="grid gap-2">
+      <label for="f-email2" class="text-sm font-medium">{t.emailConfirm} <span class="text-clay">*</span></label>
+      <input id="f-email2" name="email_confirm" type="email" autocomplete="off" inputmode="email" required aria-required="true" class="field" aria-describedby="err-email2" />
+      <p class="hidden text-sm text-clay" id="err-email2"></p>
+    </div>
+  </div>
+
+  <fieldset class="grid gap-3">
+    <legend class="mb-1 text-sm font-medium">{t.methodLegend} <span class="text-clay">*</span></legend>
+    <div class="flex flex-wrap gap-x-8 gap-y-3">
+      {methods.map((m) => (
+        <label class="flex min-h-11 cursor-pointer items-center gap-3">
+          <input type="radio" name="method" value={m.value} class="h-5 w-5 accent-clay" />
+          <span>{pick(locale, m.ja, m.en)}</span>
+        </label>
+      ))}
+    </div>
+    <p class="hidden text-sm text-clay" id="err-method"></p>
+  </fieldset>
+
+  <div class="grid gap-2">
+    <label for="f-message" class="text-sm font-medium">{t.message} <span class="text-stone">({t.optional})</span></label>
+    <textarea id="f-message" name="message" rows="6" class="field resize-y"></textarea>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-6">
+    <button type="submit" class="btn-primary">{t.submit}</button>
+    <p class="text-xs text-stone">{t.required}: <span class="text-clay">*</span></p>
+  </div>
+
+  <p role="status" aria-live="polite" class="min-h-6 text-sm text-ink" data-form-status></p>
+</form>
+
+<style>
+  .field {
+    min-height: 2.75rem;
+    width: 100%;
+    border: 1px solid var(--color-stone);
+    background: var(--color-paper);
+    padding: 0.5rem 0.75rem;
+    font: inherit;
+    color: var(--color-ink);
+    border-radius: 0;
+  }
+  .field:focus-visible {
+    outline: 2px solid var(--color-clay);
+    outline-offset: 2px;
+  }
+  .field[aria-invalid='true'] {
+    border-color: var(--color-clay);
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+
+  // Links such as "Zoom consultation" open this form with the preferred contact method preselected.
+  if (form) {
+    const method = new URLSearchParams(window.location.search).get('method');
+    const radio = method ? form.querySelector<HTMLInputElement>(`input[name="method"][value="${method}"]`) : null;
+    if (radio) radio.checked = true;
+  }
+
+  if (form) {
+    const msg = (key: string) => form.dataset[key] ?? '';
+    const summary = form.querySelector<HTMLElement>('[data-error-summary]');
+    const summaryList = form.querySelector<HTMLElement>('[data-error-list]');
+    const status = form.querySelector<HTMLElement>('[data-form-status]');
+
+    const setError = (id: string, field: HTMLElement | null, text: string) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.textContent = text;
+        el.classList.toggle('hidden', !text);
+      }
+      if (field && 'setAttribute' in field) {
+        field.setAttribute('aria-invalid', text ? 'true' : 'false');
+      }
+    };
+
+    const emailOk = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      const errors: { id: string; text: string; target: string }[] = [];
+
+      const name = String(data.get('name') ?? '').trim();
+      const email = String(data.get('email') ?? '').trim();
+      const email2 = String(data.get('email_confirm') ?? '').trim();
+      const postal = String(data.get('postal') ?? '').trim();
+      const purposes = data.getAll('purpose');
+      const method = data.get('method');
+
+      if (!name) errors.push({ id: 'err-name', text: msg('msgName'), target: 'f-name' });
+      if (!emailOk(email)) errors.push({ id: 'err-email', text: msg('msgEmail'), target: 'f-email' });
+      if (!email2 || email !== email2) errors.push({ id: 'err-email2', text: msg('msgEmailMatch'), target: 'f-email2' });
+      if (postal && !/^\d{7}$/.test(postal)) errors.push({ id: 'err-postal', text: msg('msgPostal'), target: 'f-postal' });
+      if (purposes.length === 0) errors.push({ id: 'err-purpose', text: msg('msgPurpose'), target: '' });
+      if (!method) errors.push({ id: 'err-method', text: msg('msgMethod'), target: '' });
+
+      ['err-name', 'err-email', 'err-email2', 'err-postal', 'err-purpose', 'err-method'].forEach((id) => {
+        setError(id, null, '');
+      });
+      form.querySelectorAll('[aria-invalid]').forEach((el) => el.setAttribute('aria-invalid', 'false'));
+
+      if (errors.length > 0) {
+        errors.forEach((e) => {
+          const field = e.target ? document.getElementById(e.target) : null;
+          setError(e.id, field, e.text);
+        });
+        if (summary && summaryList) {
+          summaryList.innerHTML = '';
+          errors.forEach((e) => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = `#${e.target}`;
+            a.textContent = e.text;
+            li.appendChild(a);
+            summaryList.appendChild(li);
+          });
+          summary.classList.remove('hidden');
+          summary.focus();
+        }
+        if (status) status.textContent = '';
+        return;
+      }
+
+      summary?.classList.add('hidden');
+      if (status) status.textContent = msg('msgDemo');
+    });
+  }
+</script>

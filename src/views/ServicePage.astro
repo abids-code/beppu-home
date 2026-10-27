@@ -1,0 +1,139 @@
+---
+import { Image } from 'astro:assets';
+import Figure from '../components/Figure.astro';
+import Gallery from '../components/Gallery.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Faq from '../components/Faq.astro';
+import { pick, type Locale } from '../lib/i18n';
+import type { Service } from '../content/services';
+
+interface Props {
+  locale: Locale;
+  service: Service;
+  faq?: { q: string; a: string }[];
+}
+
+const { locale, service, faq } = Astro.props;
+---
+<article>
+  <header class="wrap pt-14 md:pt-24">
+    <div class="grid grid-cols-1 gap-10 md:grid-cols-12 md:items-end">
+      <div class="md:col-span-7">
+        <p class="eyebrow">{service.eyebrow}</p>
+        <h1 class="mt-5 text-[clamp(2.25rem,5vw,4.25rem)] leading-[1.2] text-balance">{service.h1}</h1>
+      </div>
+      <p class="lede md:col-span-5 md:pb-3 text-pretty">{service.lede}</p>
+    </div>
+  </header>
+
+  <div class="wrap mt-12 md:mt-16">
+    <div class="relative overflow-hidden bg-hairline aspect-[4/3] md:aspect-[21/9]">
+      <Image
+        src={service.hero}
+        alt={service.heroAlt}
+        widths={[960, 1280, 1600, 2000]}
+        sizes="100vw"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        data-hero-image
+        class="absolute inset-0 h-full w-full object-cover"
+      />
+    </div>
+  </div>
+
+  <div class="wrap mt-20 md:mt-28 grid grid-cols-1 gap-y-24 md:gap-y-32">
+    {service.sections.map((section, i) => (
+      <section class="grid grid-cols-1 gap-10 md:grid-cols-12" aria-labelledby={`s-${i}`}>
+        <div class:list={['min-w-0 md:col-span-4', i % 2 === 1 && 'md:order-2']}>
+          <h2 id={`s-${i}`} class="text-[clamp(1.5rem,2.6vw,2.125rem)] leading-snug" data-reveal>{section.heading}</h2>
+        </div>
+
+        <div class:list={['min-w-0 md:col-span-7', i % 2 === 1 ? 'md:col-start-1 md:order-1' : 'md:col-start-6']}>
+          {section.paragraphs && (
+            <div class="prose-body grid gap-5 text-[1rem] leading-[1.95] text-ink/90">
+              {section.paragraphs.map((p) => <p data-reveal>{p}</p>)}
+            </div>
+          )}
+
+          {section.bullets && (
+            <ul class="mt-6 grid gap-3 border-t border-hairline pt-6">
+              {section.bullets.map((b) => (
+                <li class="relative pl-6 text-[0.9375rem] leading-[1.8]" data-reveal>
+                  <span aria-hidden="true" class="absolute left-0 top-[0.8em] h-px w-3 bg-clay"></span>
+                  {b}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {section.table && (
+            <div class="mt-8 -mx-5 overflow-x-auto px-5 md:mx-0 md:px-0" tabindex="0" role="region" aria-label={pick(locale, '比較表（横にスクロールできます）', 'Comparison table (scrolls sideways)')}>
+              <table class="w-full min-w-[34rem] border-collapse text-left text-[0.9375rem]">
+                <thead>
+                  <tr class="border-b border-ink">
+                    {section.table.head.map((h) => <th scope="col" class="py-4 pr-6 font-medium">{h}</th>)}
+                  </tr>
+                </thead>
+                <tbody>
+                  {section.table.rows.map((row) => (
+                    <tr class="border-b border-hairline align-top">
+                      {row.map((cell, ci) => (
+                        <td class:list={['py-4 pr-6 leading-relaxed', ci === 0 && 'eyebrow !text-[0.75rem] !tracking-[0.1em] pt-[1.1rem]']}>
+                          {cell}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {section.timeline && (
+            <ol class="mt-8 grid gap-0 border-y border-hairline">
+              {section.timeline.map((step, si) => (
+                <li class:list={['grid gap-2 py-5 md:grid-cols-[13rem_1fr] md:gap-8', si < section.timeline!.length - 1 && 'border-b border-hairline']}>
+                  <span class="font-display text-[1.0625rem] text-clay">{step.period}</span>
+                  <span class="text-[0.9375rem] leading-[1.8] text-ink/85">{step.status}</span>
+                </li>
+              ))}
+            </ol>
+          )}
+
+          {section.note && <p class="mt-6 text-sm leading-relaxed text-stone">{section.note}</p>}
+
+          {section.figure && (
+            <div class="mt-10">
+              <Figure src={section.figure.src} alt={section.figure.alt} caption={section.figure.caption} ratio="3/2" sizes="(min-width: 64rem) 55vw, 100vw" />
+            </div>
+          )}
+        </div>
+      </section>
+    ))}
+  </div>
+
+  {service.gallery && (
+    <section class="wrap mt-24 md:mt-32" aria-labelledby="service-gallery">
+      <h2 id="service-gallery" class="sr-only">{service.gallery.label}</h2>
+      <Gallery locale={locale} items={service.gallery.items} layout="strip" label={service.gallery.label} />
+    </section>
+  )}
+
+  {faq && (
+    <section class="wrap mt-24 md:mt-32" aria-labelledby="faq-title">
+      <h2 id="faq-title" class="text-[clamp(1.75rem,3.2vw,2.5rem)]" data-reveal>{pick(locale, 'よくあるご質問', 'Frequently asked questions')}</h2>
+      <div class="mt-12">
+        <Faq items={faq} id="faq" />
+      </div>
+    </section>
+  )}
+
+  <div class="mt-24 md:mt-32">
+    <CtaBand
+      locale={locale}
+      title={pick(locale, 'まずは、お気軽にご相談ください。', 'Please feel free to get in touch.')}
+      text={pick(locale, '無料査定・お問い合わせは、電話・メール・LINE・ZOOMで承ります。', 'Free valuations and enquiries by telephone, email, LINE or Zoom.')}
+    />
+  </div>
+</article>

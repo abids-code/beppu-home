@@ -1,0 +1,19 @@
+---
+import Base from '../../../layouts/Base.astro';
+import NewsPost from '../../../views/NewsPost.astro';
+import { getCollection } from 'astro:content';
+import { getNewsById } from '../../../lib/news';
+
+const locale = 'en' as const;
+
+export async function getStaticPaths() {
+  const posts = await getCollection('news');
+  return posts.map((p) => ({ params: { id: p.id } }));
+}
+
+const { id } = Astro.params;
+const item = await getNewsById(locale, id);
+---
+<Base locale={locale} path={`/column/${id}/`} title={item ? item.title : 'News'} description={item ? item.title : ''}>
+  <NewsPost locale={locale} id={id} />
+</Base>

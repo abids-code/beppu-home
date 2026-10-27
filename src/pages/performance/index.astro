@@ -1,0 +1,11 @@
+---
+import Base from '../../layouts/Base.astro';
+import Performance from '../../views/Performance.astro';
+import { pageMeta } from '../../lib/meta';
+
+const locale = 'ja' as const;
+const meta = pageMeta('performance', locale);
+---
+<Base locale={locale} path="/performance/" title={meta.title} description={meta.description} motion={true}>
+  <Performance locale={locale} />
+</Base>

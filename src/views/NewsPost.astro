@@ -1,0 +1,81 @@
+---
+import { localePath, pick, type Locale } from '../lib/i18n';
+import { getNews, render, type NewsItem } from '../lib/news';
+
+interface Props {
+  locale: Locale;
+  id: string;
+}
+
+const { locale, id } = Astro.props;
+const items = await getNews(locale);
+const index = items.findIndex((i) => i.id === id);
+const item: NewsItem | undefined = items[index];
+if (!item) {
+  throw new Error(`Missing news post: ${id}`);
+}
+const { Content } = await render(item.entry);
+const newer = items[index - 1];
+const older = items[index + 1];
+const dateFmt = new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : 'ja-JP', {
+  year: 'numeric',
+  month: locale === 'en' ? 'long' : 'long',
+  day: 'numeric',
+  timeZone: 'Asia/Tokyo',
+});
+const categoryLabel = item.category === 'case' ? pick(locale, '買取・売却事例', 'Transaction') : pick(locale, 'お知らせ・コラム', 'Article');
+---
+<article class="wrap pt-14 md:pt-24 pb-10">
+  <div class="mx-auto max-w-3xl">
+    <nav aria-label={pick(locale, 'パンくず', 'Breadcrumb')} class="text-xs text-stone">
+      <ol class="flex flex-wrap gap-2">
+        <li><a href={localePath(locale, '/column/')} class="link-underline">{pick(locale, 'お知らせ・最新情報', 'News')}</a></li>
+        <li aria-hidden="true">/</li>
+        <li aria-current="page" class="line-clamp-1">{item.title}</li>
+      </ol>
+    </nav>
+
+    <header class="mt-10">
+      <p class="flex flex-wrap items-baseline gap-x-5 gap-y-2 text-sm text-stone">
+        <time datetime={item.date.toISOString().slice(0, 10)} class="tabular-nums">{dateFmt.format(item.date)}</time>
+        <span class="eyebrow">{categoryLabel}</span>
+      </p>
+      <h1 class="mt-5 text-[clamp(2rem,4.2vw,3.25rem)] leading-[1.3] text-balance">{item.title}</h1>
+    </header>
+
+    {!item.translated && (
+      <div class="mt-10 border border-clay/40 bg-clay/5 p-5 text-sm leading-relaxed" role="note">
+        <p>This article is only available in Japanese. The English translation has not been written yet.</p>
+      </div>
+    )}
+
+    {item.dateUnverified && (
+      <div class="mt-6 border border-hairline p-5 text-sm leading-relaxed text-stone" role="note">
+        <p>{pick(locale, 'この記事の掲載日は確認中です。', 'The date of this article is being confirmed.')}</p>
+      </div>
+    )}
+
+    <div class="prose-body mt-12 grid gap-6 text-[1rem] leading-[1.95] text-ink/90">
+      <Content />
+    </div>
+
+    <nav aria-label={pick(locale, '前後の記事', 'Previous and next articles')} class="mt-20 grid gap-6 border-t border-hairline pt-10 text-sm sm:grid-cols-2">
+      {newer ? (
+        <a href={localePath(locale, `/column/${newer.id}/`)} class="group grid gap-2 no-underline">
+          <span class="eyebrow">{pick(locale, '新しい記事', 'Newer')}</span>
+          <span class="font-display text-base leading-snug group-hover:text-clay">{newer.title}</span>
+        </a>
+      ) : <span></span>}
+      {older ? (
+        <a href={localePath(locale, `/column/${older.id}/`)} class="group grid gap-2 text-left no-underline sm:text-right">
+          <span class="eyebrow">{pick(locale, '前の記事', 'Older')}</span>
+          <span class="font-display text-base leading-snug group-hover:text-clay">{older.title}</span>
+        </a>
+      ) : <span></span>}
+    </nav>
+
+    <p class="mt-12">
+      <a href={localePath(locale, '/column/')} class="btn-quiet">{pick(locale, '一覧に戻る', 'Back to all news')}</a>
+    </p>
+  </div>
+</article>

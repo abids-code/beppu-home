@@ -1,0 +1,128 @@
+---
+import Logo from './Logo.astro';
+import { company, zoomRequestPath } from '../lib/site';
+import { localePath, otherLocalePath, pick, type Locale } from '../lib/i18n';
+import { primaryNav } from '../lib/nav';
+
+interface Props {
+  locale: Locale;
+  // Current page path without locale prefix, e.g. "/buy/".
+  path: string;
+}
+
+const { locale, path } = Astro.props;
+const homeHref = localePath(locale, '/');
+const contactHref = localePath(locale, '/contact/');
+const zoomHref = localePath(locale, zoomRequestPath);
+// The 404 page has no counterpart in the other language, so the switch goes to that language's home page.
+const switchHref = path === '/404/' ? localePath(locale === 'ja' ? 'en' : 'ja', '/') : otherLocalePath(locale, path);
+const switchLabel = pick(locale, 'English', '日本語');
+const switchLang = pick(locale, 'en', 'ja');
+const isCurrent = (itemPath: string) => path === itemPath || (itemPath !== '/' && path.startsWith(itemPath));
+---
+<header class="site-header sticky top-0 z-40 bg-paper/95 backdrop-blur-[2px]" data-header>
+  <div class="wrap flex h-20 items-center justify-between gap-5">
+    <a href={homeHref} class="flex shrink-0 items-center no-underline" aria-label={pick(locale, '別府ホーム トップページ', 'Beppu Home, home page')}>
+      <Logo locale={locale} tone="dark" class="h-11 md:h-12" eager={true} />
+    </a>
+
+    <nav aria-label={pick(locale, '主要メニュー', 'Main navigation')} class="hidden items-center gap-5 xl:gap-7 lg:flex">
+      {primaryNav.map((item) => (
+        <a
+          href={localePath(locale, item.path)}
+          aria-current={isCurrent(item.path) ? 'page' : undefined}
+          class:list={['link-underline py-2 text-[0.875rem] tracking-[0.02em] text-ink', isCurrent(item.path) && 'text-clay']}
+        >
+          {pick(locale, item.labelJa, item.labelEn)}
+        </a>
+      ))}
+    </nav>
+
+    <div class="flex items-center gap-3 xl:gap-5">
+      <a href={company.telHref} class="hidden items-center gap-2 whitespace-nowrap text-[0.9375rem] tabular-nums link-underline xl:inline-flex" aria-label={pick(locale, `電話 ${company.tel}`, `Call ${company.tel}`)}>
+        <span class="text-[0.6875rem] tracking-[0.12em] text-stone">{pick(locale, 'TEL', 'TEL')}</span>
+        <span class="font-medium">{company.tel}</span>
+      </a>
+      <a href={company.lineUrl} rel="noopener" class="btn-clay hidden !min-h-11 !px-4 !py-2 text-[0.875rem] lg:inline-flex">
+        {pick(locale, 'LINEで相談', 'Chat on LINE')}
+      </a>
+      <a href={switchHref} lang={switchLang} hreflang={switchLang === 'en' ? 'en' : 'ja'} class="link-underline hidden py-2 text-[0.8125rem] tracking-[0.06em] text-stone sm:inline-block">{switchLabel}</a>
+      <button
+        type="button"
+        class="flex min-h-11 min-w-11 items-center justify-center lg:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        data-menu-toggle
+      >
+        <span class="sr-only">{pick(locale, 'メニューを開く', 'Open menu')}</span>
+        <span aria-hidden="true" class="relative block h-3.5 w-6">
+          <span class="absolute left-0 top-0 block h-px w-6 bg-ink transition-transform duration-300" data-bar></span>
+          <span class="absolute bottom-0 left-0 block h-px w-6 bg-ink transition-transform duration-300" data-bar></span>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-nav" class="hidden border-t border-hairline bg-paper lg:hidden" data-mobile-nav>
+    <nav aria-label={pick(locale, 'モバイルメニュー', 'Mobile navigation')} class="wrap grid gap-1 py-6">
+      {primaryNav.map((item) => (
+        <a href={localePath(locale, item.path)} class="flex min-h-12 items-center border-b border-hairline font-display text-lg">
+          {pick(locale, item.labelJa, item.labelEn)}
+        </a>
+      ))}
+      <a href={contactHref} class="flex min-h-12 items-center border-b border-hairline font-display text-lg">{pick(locale, 'お問い合わせ', 'Contact')}</a>
+      <div class="mt-6 grid gap-3">
+        <a href={company.lineUrl} rel="noopener" class="btn-clay justify-center">{pick(locale, 'LINEで相談（公式アカウント）', 'Chat on LINE (official account)')}</a>
+        <a href={company.telHref} class="btn-primary justify-center">{pick(locale, '電話で相談', 'Call')} {company.tel}</a>
+        <a href={zoomHref} class="btn-quiet justify-center">{pick(locale, 'Zoomで相談（フォーム）', 'Zoom consultation (form)')}</a>
+      </div>
+      <div class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-stone">
+        <a href={switchHref} lang={switchLang} class="link-underline py-2">{switchLabel}</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const panel = document.querySelector<HTMLElement>('[data-mobile-nav]');
+  const bars = document.querySelectorAll<HTMLElement>('[data-bar]');
+
+  const setOpen = (open: boolean) => {
+    toggle?.setAttribute('aria-expanded', String(open));
+    panel?.classList.toggle('hidden', !open);
+    bars.forEach((bar, i) => {
+      bar.style.transform = open ? (i === 0 ? 'translateY(6px) rotate(45deg)' : 'translateY(-6px) rotate(-45deg)') : '';
+    });
+  };
+
+  toggle?.addEventListener('click', () => {
+    setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+
+  window.matchMedia('(min-width: 64rem)').addEventListener('change', (e) => {
+    if (e.matches) setOpen(false);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
+      setOpen(false);
+      toggle.focus();
+    }
+  });
+
+  if (header) {
+    const onScroll = () => {
+      header.dataset.shadow = window.scrollY > 8 ? 'on' : 'off';
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+</script>
+
+<style>
+  [data-header][data-shadow='on'] {
+    box-shadow: 0 1px 0 var(--color-hairline);
+  }
+</style>

@@ -1,0 +1,11 @@
+---
+import Base from '../layouts/Base.astro';
+import NotFound from '../views/NotFound.astro';
+import { pageMeta } from '../lib/meta';
+
+const locale = 'ja' as const;
+const meta = pageMeta('notFound', locale);
+---
+<Base locale={locale} path="/404/" title={meta.title} description={meta.description} noindex={true}>
+  <NotFound locale={locale} />
+</Base>

@@ -1,0 +1,12 @@
+---
+import Base from '../../../layouts/Base.astro';
+import ServicePage from '../../../views/ServicePage.astro';
+import { flowFor, flowFaq } from '../../../content/flow';
+import { pageMeta } from '../../../lib/meta';
+
+const locale = 'ja' as const;
+const meta = pageMeta('flow', locale);
+---
+<Base locale={locale} path="/buy/flow/" title={meta.title} description={meta.description} motion={true}>
+  <ServicePage locale={locale} service={flowFor(locale)} faq={flowFaq[locale]} />
+</Base>

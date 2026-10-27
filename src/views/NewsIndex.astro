@@ -1,0 +1,50 @@
+---
+import NewsList from '../components/NewsList.astro';
+import { localePath, pick, type Locale } from '../lib/i18n';
+import { getNews } from '../lib/news';
+
+interface Props {
+  locale: Locale;
+  page: number;
+  perPage?: number;
+}
+
+const { locale, page, perPage = 12 } = Astro.props;
+const all = await getNews(locale);
+const pageCount = Math.max(1, Math.ceil(all.length / perPage));
+const items = all.slice((page - 1) * perPage, page * perPage);
+const pageHref = (n: number) => localePath(locale, n === 1 ? '/column/' : `/column/page/${n}/`);
+---
+<article class="wrap pt-14 md:pt-24">
+  <div class="grid grid-cols-1 gap-10 md:grid-cols-12 md:items-end">
+    <div class="md:col-span-7">
+      <p class="eyebrow">{pick(locale, 'お知らせ・コラム', 'News and articles')}</p>
+      <h1 class="mt-5 text-[clamp(2.25rem,5vw,4.25rem)] leading-[1.2]">{pick(locale, 'お知らせ・最新情報', 'News')}</h1>
+    </div>
+    <p class="lede md:col-span-5 md:pb-3">
+      {pick(locale,
+        '買取・売却の事例、お知らせ、地域のコラムをまとめています。',
+        'Transaction announcements, notices and articles about property in the area.')}
+    </p>
+  </div>
+
+  <div class="mt-16">
+    <NewsList locale={locale} items={items} />
+  </div>
+
+  {pageCount > 1 && (
+    <nav aria-label={pick(locale, 'ページ送り', 'Pagination')} class="mt-14 flex flex-wrap items-center justify-center gap-2 text-sm">
+      {page > 1 && <a href={pageHref(page - 1)} rel="prev" class="btn-quiet px-4">{pick(locale, '前のページ', 'Previous')}</a>}
+      {Array.from({ length: pageCount }, (_, i) => i + 1).map((n) => (
+        <a
+          href={pageHref(n)}
+          aria-current={n === page ? 'page' : undefined}
+          class:list={['inline-flex min-h-11 min-w-11 items-center justify-center border', n === page ? 'border-ink bg-ink text-paper' : 'border-hairline hover:border-ink']}
+        >
+          {n}
+        </a>
+      ))}
+      {page < pageCount && <a href={pageHref(page + 1)} rel="next" class="btn-quiet px-4">{pick(locale, '次のページ', 'Next')}</a>}
+    </nav>
+  )}
+</article>

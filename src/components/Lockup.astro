@@ -1,0 +1,16 @@
+---
+import { Image } from 'astro:assets';
+import lockup from '../assets/brand/loading-logo.png';
+import { pick, type Locale } from '../lib/i18n';
+
+// The full identity lockup with the registered Japanese company name (株式会社 別府ホーム).
+// Original file, aspect ratio 958 × 468, not cropped or recoloured.
+interface Props {
+  locale: Locale;
+  class?: string;
+}
+
+const { locale, class: className } = Astro.props;
+const alt = pick(locale, '別府ホーム　株式会社 別府ホーム（Beppu Home）のロゴ', 'Beppu Home logo with the company name 株式会社 別府ホーム');
+---
+<Image src={lockup} alt={alt} sizes="(min-width: 64rem) 28rem, 70vw" loading="lazy" decoding="async" class:list={['block h-auto w-full', className]} />

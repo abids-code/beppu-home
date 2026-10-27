@@ -1,0 +1,29 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "npm run build:only",
+  "outputDirectory": "dist",
+  "trailingSlash": true,
+  "cleanUrls": false,
+  "redirects": [
+    { "source": "/buy/flow.html", "destination": "/buy/flow/", "permanent": true },
+    { "source": "/buy/inheritance.html", "destination": "/buy/inheritance/", "permanent": true },
+    { "source": "/performance/index.html", "destination": "/performance/", "permanent": true },
+    { "source": "/property/cate_1/", "destination": "/property/", "permanent": true },
+    { "source": "/property/cate_1/post-13/", "destination": "/property/post-13/", "permanent": true },
+    { "source": "/column/", "has": [{ "type": "query", "key": "p", "value": "1" }], "destination": "/column/", "permanent": true },
+    { "source": "/column/", "has": [{ "type": "query", "key": "p", "value": "2" }], "destination": "/column/page/2/", "permanent": true },
+    { "source": "/column/", "has": [{ "type": "query", "key": "p", "value": "3" }], "destination": "/column/page/3/", "permanent": true }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+      ]
+    }
+  ]
+}

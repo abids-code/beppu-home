@@ -1,0 +1,12 @@
+---
+import Base from '../../../layouts/Base.astro';
+import ServicePage from '../../../views/ServicePage.astro';
+import { serviceFor } from '../../../content/services';
+import { pageMeta } from '../../../lib/meta';
+
+const locale = 'ja' as const;
+const meta = pageMeta('inheritance', locale);
+---
+<Base locale={locale} path="/buy/inheritance/" title={meta.title} description={meta.description} motion={true}>
+  <ServicePage locale={locale} service={serviceFor('inheritance', locale)} />
+</Base>

@@ -1,0 +1,11 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Contact from '../../../views/Contact.astro';
+import { pageMeta } from '../../../lib/meta';
+
+const locale = 'en' as const;
+const meta = pageMeta('contact', locale);
+---
+<Base locale={locale} path="/contact/" title={meta.title} description={meta.description} motion={true}>
+  <Contact locale={locale} />
+</Base>

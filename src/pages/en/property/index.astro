@@ -1,0 +1,11 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Property from '../../../views/Property.astro';
+import { pageMeta } from '../../../lib/meta';
+
+const locale = 'en' as const;
+const meta = pageMeta('property', locale);
+---
+<Base locale={locale} path="/property/" title={meta.title} description={meta.description} motion={true}>
+  <Property locale={locale} view="index" />
+</Base>

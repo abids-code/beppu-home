@@ -1,0 +1,67 @@
+---
+import { company, zoomRequestPath } from '../lib/site';
+import { localePath, pick, type Locale } from '../lib/i18n';
+
+// Mobile-only fixed bar with the three consultation routes.
+// It hides while the footer or the enquiry form is on screen, so it never covers
+// the form controls, the footer, or page content that the reader is working with.
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const zoomHref = localePath(locale, zoomRequestPath);
+---
+<nav
+  class="contact-bar fixed inset-x-0 bottom-0 z-30 border-t border-hairline bg-paper/95 backdrop-blur-sm lg:hidden"
+  aria-label={pick(locale, 'お問い合わせ（固定バー）', 'Contact shortcuts')}
+  data-contact-bar
+>
+  <ul class="grid grid-cols-3 gap-px bg-hairline">
+    <li class="bg-paper">
+      <a href={company.lineUrl} rel="noopener" class="flex min-h-14 flex-col items-center justify-center gap-0.5 bg-clay px-2 text-paper no-underline">
+        <span class="text-[0.9375rem] font-medium">LINE</span>
+        <span class="text-[0.6875rem] leading-tight text-paper">{pick(locale, '気軽に相談', 'Message')}</span>
+      </a>
+    </li>
+    <li class="bg-paper">
+      <a href={company.telHref} class="flex min-h-14 flex-col items-center justify-center gap-0.5 px-2 text-ink no-underline">
+        <span class="text-[0.9375rem] font-medium">{pick(locale, '電話', 'Call')}</span>
+        <span class="text-[0.6875rem] leading-tight text-stone tabular-nums">{company.tel}</span>
+      </a>
+    </li>
+    <li class="bg-paper">
+      <a href={zoomHref} class="flex min-h-14 flex-col items-center justify-center gap-0.5 px-2 text-ink no-underline">
+        <span class="text-[0.9375rem] font-medium">Zoom</span>
+        <span class="text-[0.6875rem] leading-tight text-stone">{pick(locale, 'オンライン相談', 'Online')}</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<script>
+  // Keep the bar out of the way of the footer and the enquiry form.
+  const bar = document.querySelector<HTMLElement>('[data-contact-bar]');
+  const hideFor = ['site-footer', 'contact-form'];
+  const visible = new Set<string>();
+
+  const update = () => {
+    if (!bar) return;
+    bar.hidden = visible.size > 0;
+  };
+
+  if (bar && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        const id = (entry.target as HTMLElement).id;
+        if (entry.isIntersecting) visible.add(id);
+        else visible.delete(id);
+      }
+      update();
+    }, { rootMargin: '0px 0px -72px 0px' });
+    hideFor.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) io.observe(el);
+    });
+  }
+</script>

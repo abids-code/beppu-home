@@ -1,0 +1,11 @@
+---
+import Base from '../../../layouts/Base.astro';
+import NewsIndex from '../../../views/NewsIndex.astro';
+import { pageMeta } from '../../../lib/meta';
+
+const locale = 'en' as const;
+const meta = pageMeta('news', locale);
+---
+<Base locale={locale} path="/column/" title={meta.title} description={meta.description}>
+  <NewsIndex locale={locale} page={1} />
+</Base>

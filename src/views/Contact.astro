@@ -1,0 +1,51 @@
+---
+import ContactForm from '../components/ContactForm.astro';
+import ContactOptions from '../components/ContactOptions.astro';
+import { pick, type Locale } from '../lib/i18n';
+import { Image } from 'astro:assets';
+import panorama from '../assets/photos/top-banner-bg-1.jpg';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+<article class="wrap pt-14 md:pt-24">
+  <div class="grid grid-cols-1 gap-10 md:grid-cols-12 md:items-end">
+    <div class="md:col-span-7">
+      <p class="eyebrow">{pick(locale, 'お問い合わせ', 'Contact')}</p>
+      <h1 class="mt-5 text-[clamp(2.25rem,5vw,4.25rem)] leading-[1.2] text-balance">
+        {pick(locale, '無料査定依頼・お問い合わせ', 'Free valuation and contact')}
+      </h1>
+    </div>
+    <p class="lede md:col-span-5 md:pb-3">
+      {pick(locale,
+        '無料査定のご依頼やご相談は、電話・メール・LINE・ZOOMのいずれでもお受けしています。遠方の方も、お気軽にご連絡ください。',
+        'For a free valuation or any enquiry, reach us by telephone, email, LINE or Zoom. If you are far away, please get in touch all the same.')}
+    </p>
+  </div>
+
+  <div class="relative mt-16 aspect-[16/7] overflow-hidden bg-hairline md:aspect-[21/8]">
+    <Image src={panorama} alt={pick(locale, '別府湾と市街を望む眺め。遠方からもご相談いただけます', 'View over Beppu Bay and the city. We welcome enquiries from far away.')} widths={[960, 1280, 2000]} sizes="100vw" loading="lazy" decoding="async" class="h-full w-full object-cover object-[50%_45%]" />
+  </div>
+  <div class="mt-12">
+    <ContactOptions locale={locale} />
+  </div>
+
+</article>
+
+<section id="contact-form" class="wrap mt-20 md:mt-28 grid grid-cols-1 gap-12 md:grid-cols-12" aria-labelledby="form-title">
+  <div class="md:col-span-4">
+    <h2 id="form-title" class="text-[clamp(1.75rem,3.2vw,2.5rem)]" data-reveal>{pick(locale, 'お問い合わせフォーム', 'Enquiry form')}</h2>
+    <p class="mt-6 text-sm leading-[1.9] text-stone" data-reveal>
+      {pick(locale,
+        '必須項目を入力のうえ、ご希望の連絡方法を選択してください。ご入力いただいた個人情報の取り扱いは、プライバシーポリシーに従います。',
+        'Fill in the required fields and choose how you would like us to reply. Personal information is handled in line with our privacy policy.')}
+    </p>
+    <a href={pick(locale, '/privacy/', '/en/privacy/')} class="btn-quiet mt-6">{pick(locale, 'プライバシーポリシー', 'Privacy policy')}</a>
+  </div>
+  <div class="md:col-span-7 md:col-start-6">
+    <ContactForm locale={locale} />
+  </div>
+</section>

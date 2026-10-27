@@ -1,0 +1,22 @@
+---
+import Base from '../../../../layouts/Base.astro';
+import NewsIndex from '../../../../views/NewsIndex.astro';
+import { getNews } from '../../../../lib/news';
+import { pageMeta } from '../../../../lib/meta';
+
+const locale = 'en' as const;
+export async function getStaticPaths() {
+  const perPage = 12;
+  const total = (await getNews('en')).length;
+  const pages = Math.ceil(total / perPage);
+  return Array.from({ length: pages }, (_, i) => i + 1)
+    .filter((n) => n > 1)
+    .map((n) => ({ params: { n: String(n) }, props: { page: n } }));
+}
+
+const { page } = Astro.props;
+const meta = pageMeta('news', locale);
+---
+<Base locale={locale} path={`/column/page/${page}/`} title={`${meta.title} ${page}`} description={meta.description}>
+  <NewsIndex locale={locale} page={page} />
+</Base>

@@ -1,0 +1,11 @@
+---
+import Base from '../../layouts/Base.astro';
+import LegalPage from '../../views/LegalPage.astro';
+import { pageMeta } from '../../lib/meta';
+
+const locale = 'ja' as const;
+const meta = pageMeta('terms', locale);
+---
+<Base locale={locale} path="/terms/" title={meta.title} description={meta.description}>
+  <LegalPage locale={locale} id="terms" titleJa="利用規約" titleEn="Terms of use" />
+</Base>

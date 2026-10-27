@@ -1,0 +1,206 @@
+---
+import { Image } from 'astro:assets';
+import CtaBand from '../components/CtaBand.astro';
+import SectionHead from '../components/SectionHead.astro';
+import { localePath, pick, type Locale } from '../lib/i18n';
+import { company } from '../lib/site';
+import Gallery, { type GalleryItem } from '../components/Gallery.astro';
+import cover from '../assets/photos/13_1_1.jpg';
+import floorPlan from '../assets/photos/13_1_54.jpeg';
+import point1 from '../assets/photos/13_1_11.jpg';
+import point2 from '../assets/photos/13_1_6.jpg';
+import point3 from '../assets/photos/13_1_9.jpg';
+import photoHall from '../assets/photos/13_1_2.jpg';
+import photoBedroom from '../assets/photos/13_1_4.jpg';
+import photoWashroom from '../assets/photos/13_1_5.jpg';
+import photoLiving from '../assets/photos/13_1_7.jpg';
+import photoKitchen from '../assets/photos/13_1_8.jpg';
+import photoBath from '../assets/photos/13_1_12.jpg';
+
+interface Props {
+  locale: Locale;
+  view: 'index' | 'detail';
+}
+
+const { locale, view } = Astro.props;
+const galleryItems: GalleryItem[] = [
+  { src: photoLiving, alt: pick(locale, 'リビングとダイニング', 'Living and dining area'), ratio: '4/3', span: 'col-span-2 md:col-span-7' },
+  { src: photoBedroom, alt: pick(locale, '寝室。暖色の照明とベッド', 'Bedroom with warm lighting and a bed'), ratio: '4/5', span: 'col-span-1 md:col-span-5' },
+  { src: photoKitchen, alt: pick(locale, 'キッチン', 'Kitchen'), ratio: '4/3', span: 'col-span-1 md:col-span-4' },
+  { src: photoHall, alt: pick(locale, '廊下と収納棚', 'Hallway with shelving'), ratio: '4/5', span: 'col-span-1 md:col-span-3' },
+  { src: photoWashroom, alt: pick(locale, '洗面台と床のタイル', 'Vanity and tiled floor'), ratio: '4/3', span: 'col-span-1 md:col-span-5' },
+  { src: photoBath, alt: pick(locale, '浴室まわりの室内', 'Bathroom area'), ratio: '4/3', span: 'col-span-2 md:col-span-12' },
+];
+
+const L = (path: string) => localePath(locale, path);
+
+
+const points = [
+  {
+    img: point1,
+    ja: { t: '別府駅まで徒歩圏の好立地', d: '商店街やスーパー、薬局、カフェ、飲食店など、日々の暮らしに必要なものが近くに揃っています。' },
+    en: { t: 'A central location within walking distance of Beppu Station', d: 'Shops, supermarkets, pharmacies, cafés and restaurants for everyday life are close by.' },
+  },
+  {
+    img: point2,
+    ja: { t: '源泉かけ流しの温泉を、自宅で', d: '各住戸に温泉が引かれています。鉱泉地所有権・採取権・名義変更料は、マンションの管理組合が所有しているため、0円（物件価格に含みます）。月使用料もかかりません。' },
+    en: { t: 'Hot spring water at home', d: 'Each unit has a hot spring piped in. The hot-spring land rights, the right to draw water and the transfer fee are owned by the building’s management association, so there is no charge (included in the price). There is no monthly usage fee.' },
+  },
+  {
+    img: point3,
+    ja: { t: 'リノベーション完成済みで、すぐに新生活を', d: '床・クロス・建具・給排水設備はすべて新しくなっています。南向きの広いバルコニーと大きな窓から、採光と風通しがよい住まいです。' },
+    en: { t: 'Renovation complete, so a new life can start now', d: 'The flooring, wallpaper, fittings, and water and drainage are all new. A large south-facing balcony and big windows give light and airflow.' },
+  },
+];
+---
+{view === 'index' && (
+  <article>
+    <header class="wrap pt-14 md:pt-24">
+      <div class="grid grid-cols-1 gap-10 md:grid-cols-12 md:items-end">
+        <div class="md:col-span-7">
+          <p class="eyebrow">{pick(locale, '物件情報', 'Properties')}</p>
+          <h1 class="mt-5 text-[clamp(2.25rem,5vw,4.25rem)] leading-[1.2]">{pick(locale, '物件情報一覧', 'Properties')}</h1>
+        </div>
+        <p class="lede md:col-span-5 md:pb-3">
+          {pick(locale,
+            '別府ホームで取り扱う物件の一覧です。物件の価格や詳細は、お問い合わせの際にご案内いたします。',
+            'Properties handled by Beppu Home. For price and details, please contact us.')}
+        </p>
+      </div>
+    </header>
+
+    <section class="wrap mt-16 md:mt-20" aria-label={pick(locale, '物件一覧', 'Property list')}>
+      <ol class="grid grid-cols-1 gap-10 md:grid-cols-12">
+        <li class="md:col-span-7">
+          <a href={L('/property/post-13/')} class="group block no-underline">
+            <div class="relative overflow-hidden bg-hairline" style="aspect-ratio: 16/10;">
+              <Image src={cover} alt={pick(locale, '温泉つきのリノベーション済み住戸のリビング', 'Living room of a renovated home with an in-unit hot spring')} widths={[640, 960, 1280]} sizes="(min-width: 64rem) 58vw, 100vw" class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]" />
+            </div>
+            <div class="mt-6 flex flex-wrap items-baseline gap-x-6 gap-y-2">
+              <p class="eyebrow">{pick(locale, '別府市', 'Beppu')}</p>
+              <p class="eyebrow">{pick(locale, 'リノベーション済み', 'Renovated')}</p>
+            </div>
+            <h2 class="mt-3 font-display text-[1.5rem] leading-snug group-hover:text-clay md:text-[1.75rem]">
+              {pick(locale, '各戸温泉付きリノベーションマンション', 'Renovated apartment with an in-unit hot spring')}
+            </h2>
+            <p class="mt-3 text-[0.9375rem] leading-[1.8] text-stone">
+              {pick(locale, '別府駅まで徒歩圏。各住戸に温泉が引かれた、リノベーション完成済みの住まいです。', 'Within walking distance of Beppu Station. Each unit has a hot spring and the renovation is complete.')}
+            </p>
+          </a>
+        </li>
+      </ol>
+      <p class="mt-14 text-sm text-stone">
+        {pick(locale, 'このほかにも、売却や買取のご相談をお受けしています。', 'We also take sales and purchase enquiries for properties not listed here.')}
+      </p>
+    </section>
+
+    <div class="mt-24 md:mt-32">
+      <CtaBand locale={locale} title={pick(locale, '物件のご相談は、まずお気軽に。', 'For property enquiries, start with a conversation.')} />
+    </div>
+  </article>
+)}
+
+{view === 'detail' && (
+  <article>
+    <header class="wrap pt-14 md:pt-24">
+      <nav aria-label={pick(locale, 'パンくず', 'Breadcrumb')} class="text-xs text-stone">
+        <ol class="flex flex-wrap gap-2">
+          <li><a href={L('/property/')} class="link-underline">{pick(locale, '物件情報一覧', 'Properties')}</a></li>
+          <li aria-hidden="true">/</li>
+          <li aria-current="page">{pick(locale, '各戸温泉付きリノベーションマンション', 'Renovated apartment with an in-unit hot spring')}</li>
+        </ol>
+      </nav>
+      <div class="mt-8 grid grid-cols-1 gap-10 md:grid-cols-12 md:items-end">
+        <div class="md:col-span-8">
+          <p class="eyebrow">{pick(locale, 'リノベーション売り物件', 'Renovated property for sale')}</p>
+          <h1 class="mt-5 text-[clamp(2.25rem,5vw,4.25rem)] leading-[1.2] text-balance">
+            {pick(locale, '各戸温泉付きリノベーションマンション', 'Renovated apartment with an in-unit hot spring')}
+          </h1>
+        </div>
+        <p class="lede md:col-span-4 md:pb-3">
+          {pick(locale, '別府市荘園。温泉つきの住戸で、リノベーションは完成済みです。', 'Shoen-machi, Beppu. A unit with a hot spring; the renovation is complete.')}
+        </p>
+      </div>
+    </header>
+
+    <div class="wrap mt-12">
+      <div class="relative overflow-hidden bg-hairline aspect-[4/3] md:aspect-[21/9]">
+        <Image src={cover} alt={pick(locale, '温泉つきのリノベーション済み住戸のリビング。大きな窓からバルコニーが見える', 'Living room of a renovated home with an in-unit hot spring, with large windows onto the balcony')} widths={[960, 1280, 1600, 2000]} sizes="100vw" loading="eager" fetchpriority="high" data-hero-image class="absolute inset-0 h-full w-full object-cover" />
+      </div>
+    </div>
+
+    <section class="wrap mt-20 md:mt-28 grid grid-cols-1 gap-12 md:grid-cols-12" aria-labelledby="facts">
+      <h2 id="facts" class="text-[clamp(1.5rem,2.6vw,2rem)] md:col-span-4" data-reveal>{pick(locale, '物件の概要', 'Overview')}</h2>
+      <dl class="md:col-span-7 md:col-start-6 divide-y divide-hairline border-y border-hairline">
+        {[
+          [pick(locale, '種別', 'Type'), pick(locale, 'リノベーション売り物件（マンション）', 'Renovated property for sale (apartment)')],
+          [pick(locale, '所在地', 'Location'), pick(locale, '別府市荘園（詳しい所在地は、お問い合わせの際にご案内します）', 'Shoen-machi, Beppu (the full address will be given when you contact us)')],
+          [pick(locale, '温泉', 'Hot spring'), pick(locale, '各住戸に温泉が引かれています', 'Each unit has a hot spring piped in')],
+          [pick(locale, '温泉の権利費用', 'Hot spring rights'), pick(locale, '鉱泉地所有権・採取権・名義変更料は0円（物件価格に含む）。月使用料なし。', 'Hot-spring land rights, the right to draw water and the transfer fee: no charge (included in the price). No monthly usage fee.')],
+          [pick(locale, '価格', 'Price'), pick(locale, 'お問い合わせください', 'Please contact us')],
+          [pick(locale, '内覧', 'Viewing'), pick(locale, '現地見学は予約制です。お電話でご予約ください。', 'Viewings are by appointment. Please book by telephone.')],
+        ].map(([k, v]) => (
+          <div class="grid gap-2 py-5 md:grid-cols-[10rem_1fr] md:gap-8">
+            <dt class="eyebrow pt-1">{k}</dt>
+            <dd class="text-[0.9375rem] leading-[1.9]">{v}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    <section class="wrap mt-24 md:mt-32" aria-labelledby="points">
+      <SectionHead eyebrow={pick(locale, 'この物件の特徴', 'Highlights')} title={pick(locale, '温泉と、すぐに暮らせる住まい。', 'A hot spring, and a home you can move into straight away.')} id="points" />
+      <ol class="mt-16 grid gap-14 md:grid-cols-3">
+        {points.map((p, i) => (
+          <li class="grid gap-5" data-reveal>
+            <div class="relative overflow-hidden bg-hairline" style="aspect-ratio: 4/5;">
+              <Image src={p.img} alt="" widths={[480, 720]} sizes="(min-width: 64rem) 30vw, 100vw" class="absolute inset-0 h-full w-full object-cover" />
+            </div>
+            <div>
+              <p class="font-display text-sm text-clay">0{i + 1}</p>
+              <h3 class="mt-2 text-[1.25rem] leading-snug">{pick(locale, p.ja.t, p.en.t)}</h3>
+              <p class="mt-3 text-[0.9375rem] leading-[1.9] text-stone">{pick(locale, p.ja.d, p.en.d)}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="wrap mt-24 md:mt-32" aria-labelledby="gallery">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <h2 id="gallery" class="text-[clamp(1.5rem,2.6vw,2rem)]" data-reveal>{pick(locale, 'ギャラリー', 'Gallery')}</h2>
+        <p class="text-sm text-stone">{pick(locale, '写真をクリックすると拡大表示されます。', 'Select a photograph to enlarge it.')}</p>
+      </div>
+      <div class="mt-10">
+        <Gallery locale={locale} items={galleryItems} layout="mosaic" label={pick(locale, '物件の写真', 'Property photographs')} />
+      </div>
+      <figure class="mt-16 grid grid-cols-1 gap-6 md:grid-cols-12 md:items-center" data-reveal>
+        <div class="bg-white p-4 md:col-span-6 md:col-start-6">
+          <Image src={floorPlan} alt={pick(locale, '間取り図。LDK、洋室、収納、洗面、温泉の表示があります', 'Floor plan showing the living-dining-kitchen, a bedroom, storage, washroom and a hot-spring marking')} widths={[480, 725]} sizes="(min-width: 64rem) 45vw, 100vw" loading="lazy" decoding="async" class="h-auto w-full" />
+        </div>
+        <figcaption class="text-sm leading-[1.9] text-stone md:col-span-4 md:row-start-1">
+          {pick(locale, '間取り図。物件の詳細は、お問い合わせの際にご案内します。', 'Floor plan. Full details of the property are given when you contact us.')}
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="wrap mt-24 md:mt-32 grid grid-cols-1 gap-10 md:grid-cols-12 border-t border-hairline pt-14" aria-labelledby="viewing">
+      <div class="md:col-span-5">
+        <h2 id="viewing" class="text-[clamp(1.5rem,2.6vw,2rem)]">{pick(locale, '現地見学・お問い合わせ', 'Viewing and enquiries')}</h2>
+      </div>
+      <div class="md:col-span-6 md:col-start-7 grid gap-6 text-[0.9375rem] leading-[1.9]">
+        <p>
+          {pick(locale, '物件のお問い合わせ・現地見学のご予約は、電話でお受けしています。', 'For enquiries and to book a viewing, please call us.')}
+          <a href={`tel:${company.tel.replaceAll('-', '')}`} class="link-underline ml-1 font-display text-[1.125rem]">{company.tel}</a>
+        </p>
+        <p>
+          <a href={L('/contact/')} class="btn-quiet">{pick(locale, 'お問い合わせフォームへ', 'Go to the enquiry form')}</a>
+        </p>
+      </div>
+    </section>
+
+    <div class="mt-24 md:mt-32">
+      <CtaBand locale={locale} title={pick(locale, '他の物件のご相談も、お気軽に。', 'For other properties, please get in touch.')} />
+    </div>
+  </article>
+)}

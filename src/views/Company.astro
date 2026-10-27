@@ -1,0 +1,157 @@
+---
+import { company } from '../lib/site';
+import { pick, type Locale } from '../lib/i18n';
+import { Image } from 'astro:assets';
+import portraitRep from '../assets/photos/company_img_5.jpg';
+import portraitStaff from '../assets/photos/company_img_6.jpg';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const story = pick(locale, [
+  '別府ホームはこれまでに数多くのお客様とのご縁に恵まれ、大分県別府市で開業し7年目となりました。わたしはオーストラリア出身であるため、海外と日本での不動産に対する考え方の違いを身をもって体感しております。そのなかで物事に対する観点を一つ変えて見ると、今まで諦めていた案件でも具現化可能となる物件をいくつも見いだしてまいりました。',
+  'お客様にとって「どうしていいか分からない」「手続きが大変そうだから」で終わっていたことも、当社の柔軟な発想力とマーケティング力、リフォーム技術を最大限に活用することで、お客様が想像する以上の成果を生みだすことができるのです。',
+  '不動産をただ売る・買うのではなく、あらゆる可能性を切り拓く「探究心」をもち、お客様が新しい人生の一歩を踏みだすための「力」になります。',
+], [
+  'Beppu Home has been fortunate to build relationships with many clients, and we have been in business in Beppu, Oita Prefecture, for seven years. I am from Australia, so I have experienced first-hand how differently people think about property in Japan and overseas. When I change one point of view, I often find properties that seemed impossible become workable.',
+  'Things a client thought they could not manage, or had given up on because the paperwork looked too hard, can produce results far beyond what they imagined when we bring together our flexible thinking, our marketing skills and our renovation expertise.',
+  'We do not simply sell or buy property. We bring a spirit of enquiry that opens up every possibility, and the strength to help each client take the next step in a new life.',
+]);
+
+const bios = [
+  {
+    portrait: portraitRep,
+    portraitAlt: pick(locale, '代表のニコラス ライアンの写真', 'Portrait of the representative, ニコラス ライアン'),
+    name: 'ニコラス ライアン',
+    role: pick(locale, '代表', 'Representative'),
+    keyword: pick(locale, '「探求心」', '“A spirit of enquiry”'),
+    text: pick(locale, [
+      'オーストラリアでは、鉱山技師として採鉱設計の仕事をしていました。カナダ旅行をきっかけにスキーに夢中になり、スキーができて他国の文化を学べる場所を探して行き着いたのが長野県。「ありがとう」の一言しか知らなかった私に、みなさんとても親切にしてくれました。その後、英会話講師をしながらスキーを満喫しました。',
+      '日本人の真面目で優しく、あたたかい人柄、そして歴史ある日本の文化に触れ、日本が大好きになりました。日本を知るために旅を続けている中、立ち寄った九州では、別府のまちの美しさと日本一の温泉、そして心あたたまる人情に惹かれ、移住を決断しました。',
+      '父が建設関連の仕事と不動産投資事業をしていたこともあり、「別府のまちの美しさと魅力をもっといろいろな人に知ってほしい」「家族でしあわせな時間を過ごせるホームをつくりたい」という想いから、別府ホームを開業しました。お客様の想いをカタチにしたい。ぜひ皆さまの「想い」をたくさんお聞かせください。',
+    ], [
+      'In Australia, I worked as a mining engineer designing mine operations. A trip to Canada got me hooked on skiing. Looking for somewhere I could ski and also learn about another country\'s culture, I ended up in Nagano Prefecture. People there were very kind to me, even though I knew only one word of Japanese: "arigatō". I then worked as an English teacher while enjoying skiing.',
+      'I came to love Japan through its serious, gentle and warm people and its long cultural history. While travelling to learn more about Japan, I stopped in Kyushu, where I was drawn to the beauty of Beppu, its hot springs, which are among the finest in Japan, and the warmth of its people. I decided to move there.',
+      'My father worked in construction and in property investment. Because of that, and because I wanted more people to know the beauty and appeal of Beppu, and to create homes where families can spend happy time together, I opened Beppu Home. I want to turn your wishes into reality, so please tell me as much as you can about what you hope for.',
+    ]),
+  },
+  {
+    portrait: portraitStaff,
+    portraitAlt: pick(locale, 'スタッフのニコラス 真美の写真', 'Portrait of staff member ニコラス 真美'),
+    name: 'ニコラス 真美',
+    role: pick(locale, 'スタッフ', 'Staff'),
+    keyword: pick(locale, '「一歩を踏み出す力」', '“The strength to take the next step”'),
+    text: pick(locale, [
+      '不動産を買う・売るのは、人生の中でも大きな決断だと思います。誰もが悩み、希望通りの結果にならなかったらと思いとどまる人もいます。しかし、一歩を踏み出さない人に結果は出てきません。私はお客様の「想い」を聞き、一歩を踏み出す力のサポートをさせていただきたいと常に思っております。',
+      '不動産に関して不安なこと、誰に聞いてよいかわからないことなど、どうぞお気軽にご相談ください。',
+    ], [
+      'Buying or selling property is one of the biggest decisions in anyone\'s life. Everyone worries, and some people hold back for fear that the result will not be what they hoped. But those who do not take a step do not get a result. I always want to listen to clients\' wishes and help them find the strength to take the next step.',
+      'If you are worried about property, or are not sure whom to ask, please feel free to get in touch.',
+    ]),
+  },
+];
+
+const rows = [
+  [pick(locale, '企業名', 'Company name'), pick(locale, company.nameJa, company.nameEn)],
+  [pick(locale, '代表者名', 'Representative'), pick(locale, company.representativeJa, company.representativeEn)],
+  [pick(locale, '所在地', 'Address'), `〒${company.postalCode} ${pick(locale, company.addressJa, company.addressEn)}`],
+  ['TEL', company.tel],
+  ['FAX', company.fax],
+  [pick(locale, 'メール', 'Email'), company.email],
+  [pick(locale, '営業時間', 'Hours'), pick(locale, '9:00 ～ 17:00', '9:00 – 17:00')],
+  [pick(locale, '定休日', 'Closed'), pick(locale, '土日・祝日', 'Saturdays, Sundays and public holidays')],
+  [pick(locale, '免許番号', 'Licence number'), pick(locale, '大分県知事（1）第3342号', 'Governor of Oita Prefecture (1) No. 3342')],
+  [pick(locale, '設立', 'Established'), pick(locale,
+    '平成26年4月28日 個人事業「別府ホーム」設立\n平成28年7月1日 株式会社別府ホーム設立',
+    '28 April 2014 as a sole proprietorship, “Beppu Home”\n1 July 2016 incorporated as Beppu Home Co., Ltd.')],
+  [pick(locale, '資本金', 'Capital'), pick(locale, company.capitalJa, '5,000,000 yen')],
+  [pick(locale, '従業員数', 'Staff'), pick(locale, `${company.staffCount}人`, `${company.staffCount}`)],
+  [pick(locale, '事業内容概要', 'Business'), pick(locale,
+    '不動産売買、仲介、中古住宅リノベーション、不動産コンサルティング（投資、別荘）、各種建設工事',
+    'Property sales and purchases, brokerage, renovation of used homes, property consultancy (investment and holiday homes), and various construction work')],
+  [pick(locale, '所属団体', 'Memberships'), pick(locale,
+    '公益社団法人 全日本不動産協会 大分県本部、公益社団法人 不動産保証協会、大分不動産のプロ集団「かりんの会」、別府商工会議所',
+    'Oita branch of the All Japan Real Estate Association (public interest incorporated association); Real Estate Guarantee Association (public interest incorporated association); “Karin-no-kai”, a group of Oita real-estate professionals; Beppu Chamber of Commerce and Industry')],
+];
+---
+<article>
+  <header class="wrap pt-14 md:pt-24">
+    <div class="grid grid-cols-1 gap-10 md:grid-cols-12 md:items-end">
+      <div class="md:col-span-7">
+        <p class="eyebrow">{pick(locale, '会社概要', 'Company')}</p>
+        <h1 class="mt-5 text-[clamp(2.25rem,5vw,4.25rem)] leading-[1.2] text-balance">
+          {pick(locale, '別府ホーム　代表挨拶と会社概要', 'Beppu Home: a message from the representative, and company details')}
+        </h1>
+      </div>
+      <p class="lede md:col-span-5 md:pb-3">
+        {pick(locale,
+          '大分県別府市で、不動産の売却・買取・投資・別荘のご相談を承っています。代表ニコラス ライアンからのご挨拶と、会社概要をご覧ください。',
+          'We advise on selling, buying, investment and holiday homes in Beppu, Oita Prefecture. Read a message from our representative, and our company details below.')}
+      </p>
+    </div>
+  </header>
+
+  <section class="wrap mt-20 md:mt-28 grid grid-cols-1 gap-12 md:grid-cols-12" aria-labelledby="story">
+    <div class="md:col-span-4">
+      <p class="eyebrow" data-reveal>Our story</p>
+      <h2 id="story" class="mt-4 text-[clamp(1.75rem,3.2vw,2.5rem)]" data-reveal>{pick(locale, '別府ホーム　ストーリー', 'Our story')}</h2>
+      <p class="mt-6 font-display text-lg leading-relaxed text-clay" data-reveal>
+        {pick(locale, '可能性を切り拓く“探究心”、そして一歩を踏みだす“力”', 'Helping you uncover the hidden potential in Japanese real estate')}
+      </p>
+    </div>
+    <div class="prose-body grid gap-5 md:col-span-7 md:col-start-6 text-[1rem] leading-[1.95] text-ink/90">
+      {story.map((p) => <p data-reveal>{p}</p>)}
+    </div>
+  </section>
+
+  <section class="wrap mt-24 md:mt-32" aria-labelledby="team">
+    <p class="eyebrow" data-reveal>{pick(locale, 'スタッフ紹介', 'Team')}</p>
+    <h2 id="team" class="mt-4 text-[clamp(1.75rem,3.2vw,2.5rem)]" data-reveal>{pick(locale, '代表とスタッフ', 'The representative and our staff')}</h2>
+    <div class="mt-14 grid gap-14 md:grid-cols-2">
+      {bios.map((b) => (
+        <article class="grid gap-6 border-t border-ink pt-8" data-reveal>
+          <div class="aspect-[4/3] overflow-hidden bg-hairline">
+            <Image src={b.portrait} alt={b.portraitAlt} widths={[480, 720]} sizes="(min-width: 64rem) 40vw, 100vw" loading="lazy" decoding="async" class="h-full w-full object-cover object-top" />
+          </div>
+          <div class="flex items-baseline justify-between gap-4">
+            <h3 class="text-[1.5rem]">{b.name}</h3>
+            <span class="eyebrow">{b.role}</span>
+          </div>
+          <p class="font-display text-lg text-clay">{b.keyword}</p>
+          <div class="grid gap-4 text-[0.9375rem] leading-[1.9] text-ink/85">
+            {b.text.map((p) => <p>{p}</p>)}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="wrap mt-24 md:mt-32" aria-labelledby="table-title">
+    <h2 id="table-title" class="text-[clamp(1.75rem,3.2vw,2.5rem)]" data-reveal>{pick(locale, '会社概要', 'Company details')}</h2>
+    <dl class="mt-10 divide-y divide-hairline border-y border-hairline">
+      {rows.map(([k, v]) => (
+        <div class="grid gap-2 py-5 md:grid-cols-[13rem_1fr] md:gap-8">
+          <dt class="eyebrow pt-1">{k}</dt>
+          <dd class="whitespace-pre-line text-[0.9375rem] leading-[1.9]">{v}</dd>
+        </div>
+      ))}
+    </dl>
+    <p class="mt-8 text-sm text-stone">
+      <a class="link-underline" href={company.mapsUrl} rel="noopener">{pick(locale, '地図で見る（外部サイト）', 'View on a map (external site)')}</a>
+    </p>
+  </section>
+
+  <section class="wrap mt-24 md:mt-32 grid grid-cols-1 gap-10 md:grid-cols-12 border-t border-hairline pt-14">
+    <div class="md:col-span-5">
+      <p class="eyebrow">{pick(locale, '法令に基づく表示', 'Legal')}</p>
+      <h2 class="mt-4 text-[clamp(1.5rem,2.6vw,2rem)]">{pick(locale, 'プライバシーポリシー・利用規約', 'Privacy policy and terms of use')}</h2>
+    </div>
+    <ul class="md:col-span-6 md:col-start-7 grid gap-3 text-[0.9375rem]">
+      <li><a href={pick(locale, '/privacy/', '/en/privacy/')} class="link-underline">{pick(locale, 'プライバシーポリシー', 'Privacy policy')}</a></li>
+      <li><a href={pick(locale, '/terms/', '/en/terms/')} class="link-underline">{pick(locale, '利用規約', 'Terms of use')}</a></li>
+    </ul>
+  </section>
+</article>

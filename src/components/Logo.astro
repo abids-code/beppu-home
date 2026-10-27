@@ -1,0 +1,20 @@
+---
+import { Image } from 'astro:assets';
+import logoDark from '../assets/brand/logo01_b.png';
+import logoLight from '../assets/brand/logo01_w.png';
+import { pick, type Locale } from '../lib/i18n';
+
+// The company's own logo files, used at their native aspect ratio (400 × 180).
+// "dark" is for light backgrounds, "light" for dark backgrounds.
+interface Props {
+  locale: Locale;
+  tone?: 'dark' | 'light';
+  class?: string;
+  eager?: boolean;
+}
+
+const { locale, tone = 'dark', class: className, eager = false } = Astro.props;
+const src = tone === 'light' ? logoLight : logoDark;
+const alt = pick(locale, '別府ホーム（Beppu Home）', 'Beppu Home (別府ホーム)');
+---
+<Image src={src} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" class:list={['block w-auto', className ?? 'h-11']} />
